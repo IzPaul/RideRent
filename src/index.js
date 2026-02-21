@@ -1,13 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Login from './Pages/Login.tsx';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import VehicleListing from './Pages/VehicleListing.tsx';
+import Register from './Pages/Register.tsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<Login />} />
+      <Route path='/vehicle-listing' element={<VehicleListing />} />
+      <Route path='/register' element={<Register />} />
+    </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
