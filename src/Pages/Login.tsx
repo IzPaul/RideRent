@@ -6,7 +6,7 @@ import "../CSS/login.css";
 
 export default function Login(){
     const navigate = useNavigate();
-    const [form, setForm] = useState({ username: "", password: "" });
+    const [form, setForm] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -14,9 +14,36 @@ export default function Login(){
       setForm({ ...form, [e.target.name]: e.target.value });
       setError("");
     };
-    const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
-        navigate("/vehicle-listing")
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+        const response = await fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: form.email, 
+                password: form.password
+            }),
+        });
+
+        const result = await response.text();
+
+        if (response.ok && result === "Login successful") {
+            navigate("/vehicle-listing");
+        } else {
+            setError("Invalid credentials");
+        }
+    } catch (err) {
+        setError("Network error: Is your backend running on port 8080?");
+    } finally {
+        setLoading(false);
     }
+};
 
 
     return (
@@ -34,11 +61,11 @@ export default function Login(){
 
                     <form onSubmit={handleSubmit}>
                     <input
-                        type="text"
+                        type="email"
                         placeholder="Email"
                         className="input"
-                        name="username"
-                        value={form.username}
+                        name="email"
+                        value={form.email}
                         onChange={handleChange}
                         required
                     />

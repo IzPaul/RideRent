@@ -13,9 +13,55 @@ export default function Register(){
       setForm({ ...form, [e.target.name]: e.target.value });
       setError("");
     };
-    const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
-        navigate("/vehicle-listing")
-    }
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        if(!form.email){
+            setError("Email is required");
+            return
+        }
+        if(form.password.toString().length < 8){
+            setError("Must be at least 8 characters");
+            return
+        }
+
+
+        // Prepare the payload to match RegisterRequest.java exactly
+        const registerPayload = {
+            email: form.email,
+            password: form.password,
+            fullName: form.fullname, 
+            phone: "",               
+            address: ""
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(registerPayload),
+            });
+
+            // Since your backend returns a String, use .text()
+            const result = await response.text();
+
+            if (response.ok && result.includes("successfully")) {
+                console.log("Success:", result);
+                navigate("/vehicle-listing");
+            } else {
+                // This catches "Email already registered" from your AuthService
+                setError(result);
+            }
+        } catch (err) {
+            setError("Could not connect to backend. Ensure it is running on port 8080.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -38,7 +84,6 @@ export default function Register(){
                         name="fullname"
                         value={form.fullname}
                         onChange={handleChange}
-                        required
                     />
                     <input
                         type="text"
@@ -47,7 +92,6 @@ export default function Register(){
                         name="email"
                         value={form.email}
                         onChange={handleChange}
-                        required
                     />
                     <input
                         type="password"
@@ -56,7 +100,6 @@ export default function Register(){
                         name="password"
                         value={form.password}
                         onChange={handleChange}
-                        required
                     />
 
                     <button type="submit" className="primary-btn" disabled={loading}>
