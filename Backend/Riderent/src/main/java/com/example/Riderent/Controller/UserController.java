@@ -6,8 +6,12 @@ import com.example.Riderent.Entity.UserProfile;
 import com.example.Riderent.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -42,6 +46,15 @@ public class UserController {
 
         String message = userService.changePassword(email, body.get("password"));
         return ResponseEntity.ok(new MessageResponse(message));
+    }
+
+    @PostMapping("/upload-image")
+    public String uploadImage(
+            @PathVariable String email,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+
+        return userService.uploadProfileImage(email, file);
     }
 }
 

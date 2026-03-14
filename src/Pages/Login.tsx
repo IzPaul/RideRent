@@ -10,6 +10,14 @@ export default function Login(){
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const showError = (message: React.SetStateAction<string>) => {
+        setError("❗"+message);
+
+        // setTimeout(() => {
+        //     setError("");
+        // },3000);
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setForm({ ...form, [e.target.name]: e.target.value });
       setError("");
@@ -36,10 +44,10 @@ export default function Login(){
         if (response.ok && result === "Login successful") {
             navigate("/vehicle-listing");
         } else {
-            setError("Invalid credentials");
+            showError("Invalid credentials");
         }
     } catch (err) {
-        setError("Network error: Is your backend running on port 8080?");
+        showError("Network error: Is your backend running on port 8080?");
     } finally {
         setLoading(false);
     }
@@ -57,7 +65,7 @@ export default function Login(){
                     <h2>Welcome to RideRent</h2>
                     <p className="subtitle">Please enter your details</p>
 
-                    {error && <div className="error-alert">{error}</div>}
+                    <div className="error-alert">{error}</div>
 
                     <form onSubmit={handleSubmit}>
                     <input
@@ -86,7 +94,7 @@ export default function Login(){
 
                     <p className="switch-auth">
                     Don’t have an account?{" "}
-                    <span onClick={() => navigate("/register")}>Register</span>
+                    <span className='link-btn' onClick={() => navigate("/register")}>Register</span>
                     </p>
                 </div>
                 </div>

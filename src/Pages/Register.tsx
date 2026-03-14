@@ -9,6 +9,14 @@ export default function Register(){
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const showError = (message: React.SetStateAction<string>) => {
+            setError("❗"+message);
+    
+            // setTimeout(() => {
+            //     setError("");
+            // },3000);
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setForm({ ...form, [e.target.name]: e.target.value });
       setError("");
@@ -19,11 +27,11 @@ export default function Register(){
         setError("");
 
         if(!form.email){
-            setError("Email is required");
+            showError("Email is required");
             return
         }
         if(form.password.toString().length < 8){
-            setError("Must be at least 8 characters");
+            showError("Must be at least 8 characters");
             return
         }
 
@@ -54,10 +62,10 @@ export default function Register(){
                 navigate("/vehicle-listing");
             } else {
                 // This catches "Email already registered" from your AuthService
-                setError(result);
+                showError(result);
             }
         } catch (err) {
-            setError("Could not connect to backend. Ensure it is running on port 8080.");
+            showError("Could not connect to backend. Ensure it is running on port 8080.");
         } finally {
             setLoading(false);
         }
@@ -97,7 +105,7 @@ export default function Register(){
                         type="password"
                         placeholder="Password"
                         className="input"
-                        name="password"
+                        name="password" 
                         value={form.password}
                         onChange={handleChange}
                     />
@@ -109,7 +117,7 @@ export default function Register(){
 
                     <p className="switch-auth">
                     Already have an account?{" "}
-                    <span onClick={() => navigate("/")}>Log In</span>
+                    <span className='link-btn' onClick={() => navigate("/")}>Log In</span>
                     </p>
                 </div>
                 </div>
