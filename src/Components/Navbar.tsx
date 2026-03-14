@@ -1,61 +1,75 @@
-import React from "react";
+import React, { use, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/Navbar.css";
 
 interface NavbarProps{
-    showLogout?: boolean;
+    showSettings?: boolean;
     IsInside?: boolean;
 }
 
-export default function Navbar({ showLogout = true, IsInside = true}: NavbarProps) {
-  const navigate = useNavigate();
+export default function Navbar({IsInside = true, showSettings = true}: NavbarProps) {
+    const navigate = useNavigate();
+    const [openDropdown,setOpenDropdown] = useState(false);
 
-  return (
-    <div className="navbar">
-      <button className="logo-btn" onClick={() => navigate("/")}>
-        RideRent
-      </button>
-        <div className="nav-btn-wrapper-parent">
-            {IsInside && (
-                <div className="nav-btn-wrapper">
-                    <button
-                        className="nav-btn"
-                        onClick={() => {
-                        navigate("/vehicle-listing");
-                    }}>
-                        Vehicle Listing
-                    </button>
+    const toggleDropdown = () => {
+        setOpenDropdown(!openDropdown);
+    };
+    const handleLogout = () => {
+        console.log("Logging out...");
+        navigate("/");
+    }
+    const toProfile = () => {
+        navigate("/profile");
+    }
 
-                    <button
-                        className="nav-btn"
-                        onClick={() => {
-                        navigate("/my-bookings");
-                    }}>
-                        My Bookings
-                    </button>
+    return (
+        <div className="navbar">
+        <button className="logo-btn" onClick={() => navigate("/")}>
+            RideRent
+        </button>
+            <div className="nav-btn-wrapper-parent">
+                {IsInside && (
+                    <div className="nav-btn-wrapper">
+                        <button
+                            className="nav-btn"
+                            onClick={() => {
+                            navigate("/vehicle-listing");
+                        }}>
+                            Vehicle Listing
+                        </button>
 
-                    <button
-                        className="nav-btn"
-                        onClick={() => {
-                        navigate("/my-vehicles");
-                    }}>
-                        Vehicle Listing
-                    </button>
-                </div>
-            )}
+                        <button
+                            className="nav-btn"
+                            onClick={() => {
+                            navigate("/my-bookings");
+                        }}>
+                            My Bookings
+                        </button>
 
-            {showLogout && (
-                <button
-                className="logout-btn"
-                onClick={() => {
-                    console.log("Logging out...");
-                    navigate("/");
-                }}
-                >
-                LOGOUT
-                </button>
-            )}
+                        <button
+                            className="nav-btn"
+                            onClick={() => {
+                            navigate("/my-vehicles");
+                        }}>
+                            Vehicle Listing
+                        </button>
+                    </div>
+                )}
+
+                {showSettings && (
+                    <div className="dropdown">
+                        <button className="logout-btn" onClick={toggleDropdown}>
+                            Menu
+                        </button>
+                        {openDropdown && (
+                            <div className="dropdown choices">
+                                <button onClick={toProfile}className="dropdown choices">Profile</button>
+                                <button onClick={handleLogout}>Logout</button>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
-    </div>
-  );
+    );
 }

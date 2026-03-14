@@ -68,3 +68,29 @@
   background: #111827;
   transform: translateY(-1px);
 }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown.choices {
+  position: absolute;
+  top: 40px;
+  background: #eee;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown.choices button {
+  border: none;
+  width: 100%;
+}
+.dropdown.choices button:hover{
+  opacity: 50%;
+}

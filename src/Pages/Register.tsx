@@ -73,7 +73,7 @@ export default function Register(){
 
     return (
         <>
-            <Navbar showLogout={false} IsInside={false}/>
+            <Navbar IsInside={false} showSettings={false}/>
             <main className="login-wrapper">
                 <div className="login-grid">
                 <h1 className="hero-title">Ride<br />Rent Images</h1>

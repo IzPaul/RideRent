@@ -42,6 +42,7 @@ export default function Login(){
         const result = await response.text();
 
         if (response.ok && result === "Login successful") {
+            //localStorage.setItem("email", result.email);
             navigate("/vehicle-listing");
         } else {
             showError("Invalid credentials");
@@ -56,7 +57,7 @@ export default function Login(){
 
     return (
         <>
-            <Navbar showLogout={false} IsInside={false}/>
+            <Navbar IsInside={false} showSettings={false}/>
             <main className="login-wrapper">
                 <div className="login-grid">
                 <h1 className="hero-title">Ride<br />Rent Images</h1>
