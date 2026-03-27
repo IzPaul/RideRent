@@ -16,15 +16,23 @@ export default function Navbar({IsInside = true, showSettings = true}: NavbarPro
     };
     const handleLogout = () => {
         console.log("Logging out...");
+        localStorage.clear();
         navigate("/");
     }
     const toProfile = () => {
         navigate("/profile");
     }
+    const clickLogo = () => {
+        if(IsInside){
+            navigate("/vehicle-listing");
+        }else{
+            navigate("/")
+        }
+    }
 
     return (
         <div className="navbar">
-        <button className="logo-btn" onClick={() => navigate("/")}>
+        <button className="logo-btn" onClick={clickLogo}>
             RideRent
         </button>
             <div className="nav-btn-wrapper-parent">

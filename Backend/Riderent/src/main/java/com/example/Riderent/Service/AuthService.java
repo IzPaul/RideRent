@@ -6,6 +6,7 @@ import com.example.Riderent.Entity.UserProfile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.Riderent.Repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -38,6 +39,7 @@ public class AuthService {
         return "User registered successfully";
     }
 
+    @Transactional(readOnly = true)
     public String login(LoginRequest request) {
 
         UserProfile user = userRepository.findByEmail(request.getEmail())

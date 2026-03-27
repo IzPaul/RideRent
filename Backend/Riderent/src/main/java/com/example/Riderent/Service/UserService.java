@@ -2,6 +2,7 @@ package com.example.Riderent.Service;
 
 
 import com.example.Riderent.DTO.UpdateProfileRequest;
+import com.example.Riderent.DTO.UserProfileResponse;
 import com.example.Riderent.Entity.UserProfile;
 import com.example.Riderent.Repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -21,10 +23,21 @@ public class UserService {
     }
 
     // get profile
-    public UserProfile getProfile(String email) {
+    public UserProfileResponse getProfile(String email) {
         UserProfile profile = repository.findByEmail(email).get();
         if (profile == null) throw new RuntimeException("Profile not found");
-        return profile;
+
+        String base64Image = null;
+        if (profile.getImage() != null) {
+            base64Image = Base64.getEncoder().encodeToString(profile.getImage());
+        }
+
+        return new UserProfileResponse(
+                profile.getFullName(),
+                profile.getEmail(),
+                profile.getPhone(),
+                profile.getAddress(),
+                base64Image);
     }
 
     // edit profile
@@ -40,6 +53,8 @@ public class UserService {
 
             profile.setFullName(request.getFullName());
             profile.setPhone(request.getPhone());
+            profile.setEmail(request.getEmail());
+            profile.setAddress(request.getAddress());
 
             repository.save(profile);
             return "Profile updated successfully";

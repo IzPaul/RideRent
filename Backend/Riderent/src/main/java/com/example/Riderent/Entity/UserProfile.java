@@ -1,6 +1,8 @@
 package com.example.Riderent.Entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,7 +21,11 @@ public class UserProfile {
     private String phone;
     private String address;
 
+
+    @JdbcType(VarbinaryJdbcType.class)
+    @Column(name = "image")
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     private byte[] image;
 
     private LocalDateTime createdAt;

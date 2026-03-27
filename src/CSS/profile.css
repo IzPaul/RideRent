@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 .profile-page {
   display: flex;
   gap: 30px;
@@ -111,6 +115,7 @@
 
 /* Info Rows */
 .info-row {
+  height: 80px;
   display: flex;
   justify-content: space-between;
   padding: 12px 0;
@@ -120,6 +125,7 @@
 .info-row label {
   font-size: 14px;
   color: #4a5568;
+  width: 50%;
 }
 
 .info-row p {

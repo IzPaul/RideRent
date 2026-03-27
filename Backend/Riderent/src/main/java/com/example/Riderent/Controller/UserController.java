@@ -2,6 +2,7 @@ package com.example.Riderent.Controller;
 
 import com.example.Riderent.DTO.MessageResponse;
 import com.example.Riderent.DTO.UpdateProfileRequest;
+import com.example.Riderent.DTO.UserProfileResponse;
 import com.example.Riderent.Entity.UserProfile;
 import com.example.Riderent.Service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = "http://localhost:3000/")
 public class UserController {
 
     private final UserService userService;
@@ -24,8 +26,13 @@ public class UserController {
 
     // GET PROFILE
     @GetMapping("/profile")
-    public ResponseEntity<UserProfile> getProfile(@RequestParam String email) {
-        return ResponseEntity.ok(userService.getProfile(email));
+    public ResponseEntity<?> getProfile(@RequestParam String email) {
+        UserProfileResponse profile = userService.getProfile(email);
+
+        if (profile == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+        return ResponseEntity.ok(profile);
     }
 
     // EDIT PROFILE
@@ -48,13 +55,17 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse(message));
     }
 
-    @PostMapping("/upload-image")
-    public String uploadImage(
+    @PostMapping("/upload-image/{email}")
+    public ResponseEntity<?> uploadImage(
             @PathVariable String email,
             @RequestParam("file") MultipartFile file
-    ) throws IOException {
-
-        return userService.uploadProfileImage(email, file);
+    ) {
+        try {
+            String result = userService.uploadProfileImage(email, file);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 }
 

@@ -42,7 +42,7 @@ export default function Login(){
         const result = await response.text();
 
         if (response.ok && result === "Login successful") {
-            //localStorage.setItem("email", result.email);
+            localStorage.setItem("email", form.email);
             navigate("/vehicle-listing");
         } else {
             showError("Invalid credentials");
