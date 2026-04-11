@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './shared/styles/index.css';
 import reportWebVitals from './reportWebVitals';
-import Login from './Pages/Login.tsx';
+import Login from './authentication feature/pages/Login.tsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import VehicleListing from './Pages/VehicleListing.tsx';
-import Register from './Pages/Register.tsx';
-import Profile from './Pages/Profile.tsx';
+import VehicleListing from './vehicles feature/pages/VehicleListing.tsx';
+import Register from './authentication feature/pages/Register.tsx';
+import Profile from './profile feature/pages/Profile.tsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
