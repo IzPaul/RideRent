@@ -1,3 +1,4 @@
+import api, { uploadImage } from '../../api/axiosConfig';
 import Navbar from '../../shared/Navbar.tsx'
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,37 +23,33 @@ export default function Login(){
       setForm({ ...form, [e.target.name]: e.target.value });
       setError("");
     };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+        e.preventDefault();
+        setLoading(true);
+        setError("");
 
-    try {
-        const response = await fetch("http://localhost:8080/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: form.email, 
+        try {
+            const response = await api.post("/api/auth/login", {
+                email: form.email,
                 password: form.password
-            }),
-        });
+            });
 
-        const result = await response.text();
+            const result = response.data;
 
-        if (response.ok && result === "Login successful") {
-            localStorage.setItem("email", form.email);
-            navigate("/vehicle-listing");
-        } else {
-            showError("Invalid credentials");
+            if (response.status === 200 && result.includes("successful")) {
+                localStorage.setItem("email", form.email);
+                navigate("/vehicle-listing");
+            } else {
+                showError("Invalid credentials");
+            }
+        } catch (err: any) {
+            console.error(err);
+            showError("Network error: Please check your connection");
+        } finally {
+            setLoading(false);
         }
-    } catch (err) {
-        showError("Network error: Is your backend running on port 8080?");
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
 
     return (

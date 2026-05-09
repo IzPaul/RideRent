@@ -1,3 +1,4 @@
+import api, { uploadImage } from '../../api/axiosConfig';
 import Navbar from '../../shared/Navbar.tsx'
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +36,6 @@ export default function Register(){
             return
         }
 
-
-        // Prepare the payload to match RegisterRequest.java exactly
         const registerPayload = {
             email: form.email,
             password: form.password,
@@ -46,26 +45,18 @@ export default function Register(){
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(registerPayload),
-            });
+            const response = await api.post("/api/auth/register", registerPayload);
 
-            // Since your backend returns a String, use .text()
             const result = await response.text();
 
             if (response.ok && result.includes("successfully")) {
                 console.log("Success:", result);
-                navigate("/vehicle-listing");
+                navigate("/");
             } else {
-                // This catches "Email already registered" from your AuthService
-                showError(result);
+                showError(result.toString();
             }
         } catch (err) {
-            showError("Could not connect to backend. Ensure it is running on port 8080.");
+            showError(err.response?.data || "Registration failed. Please try again.");
         } finally {
             setLoading(false);
         }
