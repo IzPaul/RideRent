@@ -1,19 +1,24 @@
 package com.example.Riderent.shared.user.model;
 
+import com.example.Riderent.features.vehicles.Vehicle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@DynamicUpdate
 public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;  // same as user ID
+    private UUID id;
 
     private String email;
     private String password;
@@ -21,14 +26,17 @@ public class UserProfile {
     private String phone;
     private String address;
 
-
-    @JdbcType(VarbinaryJdbcType.class)
-    @Column(name = "image")
     @Lob
     @Basic(fetch = FetchType.EAGER)
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "image", columnDefinition = "bytea")
     private byte[] image;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "owner")
+    @JsonIgnore
+    private List<Vehicle> vehicles;
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }

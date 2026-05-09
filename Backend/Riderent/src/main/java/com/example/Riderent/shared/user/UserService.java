@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,10 +23,9 @@ public class UserService {
         this.repository = repository;
     }
 
-    // get profile
     public UserProfileResponse getProfile(String email) {
-        UserProfile profile = repository.findByEmail(email).get();
-        if (profile == null) throw new RuntimeException("Profile not found");
+        Optional<UserProfile> optional = repository.findByEmail(email);
+        UserProfile profile = optional.orElseThrow(() -> new RuntimeException("Profile not found"));
 
         String base64Image = null;
         if (profile.getImage() != null) {
@@ -40,30 +40,33 @@ public class UserService {
                 base64Image);
     }
 
-    // edit profile
     public String updateProfile(String email, UpdateProfileRequest request) {
-        try{
-            UserProfile profile = repository.findByEmail(email).get();
-            if (profile == null) {
-                profile = new UserProfile();
-                profile.setId(UUID.randomUUID());
-                profile.setEmail(email);
-                profile.setCreatedAt(LocalDateTime.now());
-            }
+        Optional<UserProfile> optionalProfile = repository.findByEmail(email);
 
-            profile.setFullName(request.getFullName());
-            profile.setPhone(request.getPhone());
+        UserProfile profile = optionalProfile.orElseGet(() -> {
+            UserProfile newProfile = new UserProfile();
+            newProfile.setId(UUID.randomUUID());
+            newProfile.setEmail(email);
+            newProfile.setCreatedAt(LocalDateTime.now());
+            return newProfile;
+        });
+
+        byte[] currentImage = profile.getImage();
+
+        profile.setFullName(request.getFullName());
+        profile.setPhone(request.getPhone());
+        profile.setAddress(request.getAddress());
+
+        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
             profile.setEmail(request.getEmail());
-            profile.setAddress(request.getAddress());
-
-            repository.save(profile);
-            return "Profile updated successfully";
-        }catch (Exception e){
-            throw  new RuntimeException("User not found");
         }
+
+        profile.setImage(currentImage);
+
+        repository.save(profile);
+        return "Profile updated successfully";
     }
 
-    // change password
     public String changePassword(String email, String newPassword) {
         try {
             UserProfile profile = repository.findByEmail(email).get();
@@ -77,14 +80,26 @@ public class UserService {
     }
 
     public String uploadProfileImage(String email, MultipartFile file) throws IOException {
-
-        try {
-            UserProfile profile = repository.findByEmail(email).get();
-            profile.setImage(file.getBytes());
-            repository.save(profile);
-            return "Image uploaded successfully";
-        }catch (Exception e){
-            throw  new RuntimeException("User not found");
+        if (file.isEmpty()) {
+            throw new RuntimeException("Please select an image file");
         }
+
+        final long MAX_SIZE = 2 * 1024 * 1024; // 2MB
+        if (file.getSize() > MAX_SIZE) {
+            throw new RuntimeException("File size must be less than 2MB");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new RuntimeException("Only image files are allowed");
+        }
+
+        UserProfile profile = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        profile.setImage(file.getBytes());
+        repository.save(profile);
+
+        return "Profile image uploaded successfully";
     }
 }

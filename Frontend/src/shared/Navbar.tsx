@@ -59,7 +59,7 @@ export default function Navbar({IsInside = true, showSettings = true}: NavbarPro
                             onClick={() => {
                             navigate("/my-vehicles");
                         }}>
-                            Vehicle Listing
+                            My Vehicles
                         </button>
                     </div>
                 )}

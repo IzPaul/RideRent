@@ -24,9 +24,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/user/**").permitAll()
-                .anyRequest().authenticated()
+                  .anyRequest().permitAll()
+//                .requestMatchers("/api/auth/**").permitAll()
+//                .requestMatchers("/api/user/**").permitAll()
+//                .requestMatchers("/api/user/profile/**").permitAll()
+//                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));;
 

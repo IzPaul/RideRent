@@ -7,7 +7,7 @@ public class UserProfileResponse {
     private String address;
     private String image;
 
-    public UserProfileResponse(String fullName, String email, String phone, String address, String image){
+    public UserProfileResponse(String fullName, String email, String phone, String address, String image) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -15,4 +15,23 @@ public class UserProfileResponse {
         this.image = image;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getImage() {
+        return image;
+    }
 }

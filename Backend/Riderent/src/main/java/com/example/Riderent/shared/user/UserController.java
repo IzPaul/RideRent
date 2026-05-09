@@ -58,15 +58,19 @@ public class UserController {
     @PostMapping("/upload-image/{email}")
     public ResponseEntity<?> uploadImage(
             @PathVariable String email,
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
+
         try {
             String result = userService.uploadProfileImage(email, file);
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+
+
+
 }
 
 

@@ -1,13 +1,19 @@
 package com.example.Riderent.features.vehicles;
 
 
+import com.example.Riderent.shared.user.model.UserProfile;
+import jakarta.persistence.*;
 
 @Entity
-public class Vehicles {
+public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private UserProfile owner;
 
     private String model;
 
@@ -17,6 +23,14 @@ public class Vehicles {
 
     @Embedded
     private Address address;
+
+    public UserProfile getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserProfile owner) {
+        this.owner = owner;
+    }
 
     public Vehicle() {
     }
@@ -108,5 +122,10 @@ class Address {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    @Override
+    public String toString() {
+        return region + ", " + province + ", " + city;
     }
 }
