@@ -16,7 +16,8 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000",
-                                "https://riderent.onrender.com"
+                                "https://riderent.onrender.com",
+                                "https://riderent-website.onrender.com"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*");
