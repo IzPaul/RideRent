@@ -24,6 +24,8 @@ api.interceptors.response.use(
   }
 );
 
+console.log("API Base URL:", process.env.REACT_APP_API_URL);
+
 export const uploadImage = async (endpoint, file) => {
   const formData = new FormData();
   formData.append("file", file);
