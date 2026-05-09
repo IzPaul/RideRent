@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api, { uploadImage } from '../../api/axiosConfig';
 import Navbar from '../../shared/Navbar.tsx'
 import "../styles/profile.css";
 
@@ -40,21 +41,16 @@ export default function Profile() {
             return;
         }
 
-        fetch(`http://localhost:8080/api/user/profile?email=${encodeURIComponent(storedEmail)}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Profile not found");
-                return res.json();
+        api.get(`/api/user/profile?email=${encodeURIComponent(storedEmail)}`)
+            .then((res) => {
+                console.log("Profile data received:", res.data);
+                setUser(res.data);
+                setForm(res.data);
             })
-            .then(data => {
-                console.log("Profile data received:", data); // Debug
-                setUser(data);
-                setForm(data);
-                setLoading(false);
-            })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
-                setLoading(false);
-            });
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -65,16 +61,12 @@ export default function Profile() {
         const storedEmail = localStorage.getItem("email");
 
         try {
-            const response = await fetch(
-                `http://localhost:8080/api/user/profile?email=${encodeURIComponent(storedEmail || "")}`,
-                {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
-                }
+            const response = await api.put(
+                `/api/user/profile?email=${encodeURIComponent(storedEmail || "")}`,
+                form
             );
 
-            if (!response.ok) throw new Error("Update failed");
+            console.log("Success:", response.data);
 
             setUser(form);
             if (form.email !== storedEmail) {
@@ -82,9 +74,9 @@ export default function Profile() {
             }
             setEditMode(false);
             alert("Profile updated successfully!");
-        } catch (error) {
-            console.error(error);
-            alert("Error updating profile.");
+        } catch (error: any) {
+            console.error("Update error:", error);
+            alert(error.response?.data?.message || "Error updating profile.");
         } finally {
             setLoading(false);
         }
@@ -99,39 +91,26 @@ export default function Profile() {
 
        setLoading(true);
        try {
-           const formData = new FormData();
-           formData.append("file", selectedFile);
-
-           const response = await fetch(
-               `http://localhost:8080/api/user/upload-image/${encodeURIComponent(user.email)}`,
-               {
-                   method: "POST",
-                   body: formData,
-               }
+           const response = await uploadImage(
+               `/api/user/upload-image/${encodeURIComponent(user.email)}`,
+               selectedFile
            );
 
-           if (!response.ok) {
-               const errorText = await response.text();
-               throw new Error(errorText);
-           }
+           alert(response.data || "Profile picture updated successfully!");
 
+           // Refresh profile
            const storedEmail = localStorage.getItem("email");
-           const refreshRes = await fetch(
-               `http://localhost:8080/api/user/profile?email=${encodeURIComponent(storedEmail || "")}`
+           const refreshRes = await api.get(
+               `/api/user/profile?email=${encodeURIComponent(storedEmail || "")}`
            );
 
-           if (refreshRes.ok) {
-               const updatedUser = await refreshRes.json();
-               setUser(updatedUser);
-               setForm(updatedUser);
-           }
-
-           alert("Profile picture updated successfully!");
+           setUser(refreshRes.data);
+           setForm(refreshRes.data);
            setSelectedFile(null);
 
        } catch (error: any) {
            console.error(error);
-           alert(error.message || "Failed to upload image");
+           alert(error.response?.data || "Error uploading image.");
        } finally {
            setLoading(false);
        }
