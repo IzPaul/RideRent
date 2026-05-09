@@ -27,35 +27,36 @@ export default function Register(){
         setLoading(true);
         setError("");
 
-        if(!form.email){
+        if (!form.email) {
             showError("Email is required");
-            return
+            return;
         }
-        if(form.password.toString().length < 8){
-            showError("Must be at least 8 characters");
-            return
+        if (form.password.length < 8) {
+            showError("Password must be at least 8 characters");
+            return;
         }
 
         const registerPayload = {
             email: form.email,
             password: form.password,
-            fullName: form.fullname, 
-            phone: "",               
+            fullName: form.fullname,
+            phone: "",
             address: ""
         };
 
         try {
             const response = await api.post("/api/auth/register", registerPayload);
 
-            const result = await response.text();
+            const result = response.text();
 
-            if (response.ok && result.includes("successfully")) {
-                console.log("Success:", result);
+            if (response.status === 200 && result.toString().includes("success")) {
+                console.log("Registration successful");
                 navigate("/");
             } else {
-                showError(result.toString();
+                showError(result.toString());
             }
-        } catch (err) {
+        } catch (err: any) {
+            console.error(err);
             showError(err.response?.data || "Registration failed. Please try again.");
         } finally {
             setLoading(false);
