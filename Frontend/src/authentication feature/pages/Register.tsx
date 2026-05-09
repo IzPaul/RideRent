@@ -47,7 +47,7 @@ export default function Register(){
         try {
             const response = await api.post("/api/auth/register", registerPayload);
 
-            const result = response.text();
+            const result = response.data;
 
             if (response.status === 200 && result.toString().includes("success")) {
                 console.log("Registration successful");
