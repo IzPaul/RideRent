@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
+  baseURL: baseURL,
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
@@ -24,7 +26,8 @@ api.interceptors.response.use(
   }
 );
 
-console.log("API Base URL:", import.meta.env.VITE_API_URL);
+console.log("API Base URL:", process.env.REACT_APP_API_URL);
+console.log("Using API Base URL:", baseURL);
 
 export const uploadImage = async (endpoint, file) => {
   const formData = new FormData();
