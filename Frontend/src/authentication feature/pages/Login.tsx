@@ -3,6 +3,7 @@ import Navbar from '../../shared/Navbar.tsx'
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
+import logo from "../../shared/RideRentLogo.png";
 
 
 export default function Login(){
@@ -57,7 +58,8 @@ export default function Login(){
             <Navbar IsInside={false} showSettings={false}/>
             <main className="login-wrapper">
                 <div className="login-grid">
-                <h1 className="hero-title">Ride<br />Rent Images</h1>
+                <img className="logo-image" src={logo} alt="RideRentLogo" />
+
 
                 <div className="login-card">
                     <h2>Welcome to RideRent</h2>

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import VehicleListing from './vehicles feature/pages/VehicleListing.tsx';
 import Register from './authentication feature/pages/Register.tsx';
 import Profile from './profile feature/pages/Profile.tsx';
+import MyVehicles from './vehicles feature/pages/MyVehicles.tsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,6 +16,7 @@ root.render(
     <Routes>
       <Route path='/' element={<Login />} />
       <Route path='/vehicle-listing' element={<VehicleListing />} />
+      <Route path='/my-vehicles' element={<MyVehicles />} />
       <Route path='/register' element={<Register />} />
       <Route path='/profile' element={<Profile />} />
     </Routes>

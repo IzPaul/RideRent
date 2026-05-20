@@ -3,6 +3,7 @@ import Navbar from '../../shared/Navbar.tsx'
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
+import logo from "../../shared/RideRentLogo.png";
 
 export default function Register(){
     const navigate = useNavigate();
@@ -68,50 +69,50 @@ export default function Register(){
             <Navbar IsInside={false} showSettings={false}/>
             <main className="login-wrapper">
                 <div className="login-grid">
-                <h1 className="hero-title">Ride<br />Rent Images</h1>
+                    <img className="logo-image" src={logo} alt="RideRentLogo" />
 
-                <div className="login-card">
-                    <h2>Register to RideRent</h2>
-                    <p className="subtitle">Please enter your details on required fields</p>
+                    <div className="login-card">
+                        <h2>Register to RideRent</h2>
+                        <p className="subtitle">Please enter your details on required fields</p>
 
-                    {error && <div className="error-alert">{error}</div>}
+                        {error && <div className="error-alert">{error}</div>}
 
-                    <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Full Name"
-                        className="input"
-                        name="fullname"
-                        value={form.fullname}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Email"
-                        className="input"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="input"
-                        name="password" 
-                        value={form.password}
-                        onChange={handleChange}
-                    />
+                        <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder="Full Name"
+                            className="input"
+                            name="fullname"
+                            value={form.fullname}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Email"
+                            className="input"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            className="input"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                        />
 
-                    <button type="submit" className="primary-btn" disabled={loading}>
-                        {loading ? "Signing In..." : "Register"}
-                    </button>
-                    </form>
+                        <button type="submit" className="primary-btn" disabled={loading}>
+                            {loading ? "Signing In..." : "Register"}
+                        </button>
+                        </form>
 
-                    <p className="switch-auth">
-                    Already have an account?{" "}
-                    <span className='link-btn' onClick={() => navigate("/")}>Log In</span>
-                    </p>
-                </div>
+                        <p className="switch-auth">
+                        Already have an account?{" "}
+                        <span className='link-btn' onClick={() => navigate("/")}>Log In</span>
+                        </p>
+                    </div>
                 </div>
             </main>
         </>

@@ -107,6 +107,13 @@
   text-decoration: underline;
 }
 
+.logo-image {
+    width: 500px;
+    height: auto;
+    background: white;
+    border-radius: 50%;
+}
+
 @media (max-width: 968px) {
   .login-grid {
     grid-template-columns: 1fr;

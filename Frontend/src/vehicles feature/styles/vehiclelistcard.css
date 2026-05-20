@@ -1,0 +1,55 @@
+.vehicle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+/* Image Placeholder */
+.vehicle-image {
+  width: 120px;
+  height: 100px;
+  background: #e8edf5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Vehicle Info */
+.vehicle-info {
+  flex: 1;
+  margin-left: 25px;
+}
+
+.vehicle-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e2a3a;
+}
+
+.vehicle-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.vehicle-rating {
+  font-size: 18px;
+  color: #f5b50a;
+  min-width: 100px;
+  text-align: right;
+}
