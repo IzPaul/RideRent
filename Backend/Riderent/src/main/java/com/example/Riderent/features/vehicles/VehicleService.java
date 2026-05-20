@@ -31,6 +31,7 @@ public class VehicleService {
                 .map(vehicle -> {
                     vehicle.setModel(updatedVehicle.getModel());
                     vehicle.setType(updatedVehicle.getType());
+                    vehicle.setDailyRate(updatedVehicle.getDailyRate());
                     vehicle.setRating(updatedVehicle.getRating());
                     vehicle.setAddress(updatedVehicle.getAddress());
 

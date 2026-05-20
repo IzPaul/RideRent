@@ -40,6 +40,10 @@ public class UserService {
                 base64Image);
     }
 
+    public Optional<UserProfile> findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
     public String updateProfile(String email, UpdateProfileRequest request) {
         Optional<UserProfile> optionalProfile = repository.findByEmail(email);
 
