@@ -30,16 +30,17 @@ export default function VehicleDetails() {
     const handleBook = () => {
         // TODO: Later implement booking flow
         alert(`Booking flow for ${vehicle?.model} will be implemented here!`);
-        // navigate(`/booking/${id}`);
     };
 
-    if (loading) return <div className="vehicle-page"><Navbar /><p>Loading...</p></div>;
-    if (!vehicle) return <div className="vehicle-page"><Navbar /><p>Vehicle not found.</p></div>;
+    if (loading) return <><Navbar /><div className="vehicle-page"><p>Loading...</p></div></>;
+    if (!vehicle) return <><Navbar /><div className="vehicle-page"><p>Vehicle not found.</p></div></>;
 
     return (
         <>
             <Navbar />
             <div className="vehicle-page details-page">
+                {loading && (<p>Loading...</p>)}
+                {!vehicle && (<p>Vehicle not found.</p>)}
                 <div className="details-container">
                     <button className="back-btn" onClick={() => navigate(-1)}>
                         ← Back to Listings
@@ -49,30 +50,40 @@ export default function VehicleDetails() {
                         <h1>{vehicle.model}</h1>
                         <div className="rating-large">
                             {"★".repeat(Math.floor(vehicle.rating || 0))}
+                            {"☆".repeat(5 - Math.floor(vehicle.rating || 0))}
                             <span> ({vehicle.rating || 0})</span>
                         </div>
                     </div>
 
                     <div className="details-content">
                         <div className="vehicle-image-large">
-                            <div className="image-placeholder">📸 Vehicle Image</div>
+                            <div className="image-placeholder">Vehicle Image</div>
                         </div>
 
                         <div className="details-info">
                             <div className="info-row">
                                 <strong>Type:</strong> <span>{vehicle.type}</span>
                             </div>
+
                             <div className="info-row">
                                 <strong>Daily Rate:</strong>
                                 <span className="price">₱{vehicle.dailyRate} / day</span>
                             </div>
                             <div className="info-row">
-                                <strong>Description:</strong>
-                                <span>{vehicle.description}</span>
-                            </div>
-                            <div className="info-row">
                                 <strong>Location:</strong>
                                 <span>{vehicle.address?.region}, {vehicle.address?.province}, {vehicle.address?.city}</span>
+                            </div>
+                            <div className="info-row">
+                                <strong>Owner Name:</strong>
+                                <span className="price">₱{vehicle.dailyRate} / day</span>
+                            </div>
+                            <div className="info-row">
+                                <strong>Owner Phone number:</strong>
+                                <span className="price">₱{vehicle.dailyRate} / day</span>
+                            </div>
+                            <div className="info-row">
+                                <strong>Description:</strong>
+                                <span>{vehicle.description}</span>
                             </div>
                         </div>
                     </div>

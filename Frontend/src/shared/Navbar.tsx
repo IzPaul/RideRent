@@ -71,7 +71,7 @@ export default function Navbar({IsInside = true, showSettings = true}: NavbarPro
                         </button>
                         {openDropdown && (
                             <div className="dropdown choices">
-                                <button onClick={toProfile}className="dropdown choices">Profile</button>
+                                <button onClick={toProfile}>Profile</button>
                                 <button onClick={handleLogout}>Logout</button>
                             </div>
                         )}

@@ -23,8 +23,25 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public Optional<Vehicle> getVehicleById(Long id) {
-        return vehicleRepository.findById(id);
+    public Optional<VehicleResponse> getVehicleById(Long id) {
+        return vehicleRepository.findById(id).map(this::convertToResponseDto);
+    }
+
+    private VehicleResponse convertToResponseDto(Vehicle vehicle) {
+        VehicleResponse dto = new VehicleResponse();
+        dto.setModel(vehicle.getModel());
+        dto.setDescription(vehicle.getDescription());
+        dto.setType(vehicle.getType());
+        dto.setDailyRate(vehicle.getDailyRate());
+        dto.setAddress(vehicle.getAddress());
+
+        if (vehicle.getOwner() != null) {
+            dto.setOwnerName(vehicle.getOwner().getFullName());
+            dto.setOwnerEmail(vehicle.getOwner().getEmail());
+            dto.setOwnerPhone(vehicle.getOwner().getPhone());
+        }
+
+        return dto;
     }
 
     public List<Vehicle> getVehiclesByOwner(UserProfile owner) {

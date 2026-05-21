@@ -1,6 +1,6 @@
 package com.example.Riderent.features.vehicles;
 
-public class VehicleRequest {
+public class VehicleResponse {
 
     private String model;
     private String description;
@@ -8,8 +8,10 @@ public class VehicleRequest {
     private Double dailyRate;
     private String ownerEmail;
     private Vehicle.Address address;
+    private String ownerName;
+    private String ownerPhone;
 
-    public VehicleRequest() {}
+    public VehicleResponse() {}
 
     public String getModel() {
         return model;
@@ -57,5 +59,21 @@ public class VehicleRequest {
 
     public void setAddress(Vehicle.Address address) {
         this.address = address;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerPhone() {
+        return ownerPhone;
+    }
+
+    public void setOwnerPhone(String ownerPhone) {
+        this.ownerPhone = ownerPhone;
     }
 }

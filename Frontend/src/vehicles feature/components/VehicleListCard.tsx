@@ -20,7 +20,7 @@ export default function VehicleListCard({ vehicle, isPublic = false }: VehicleLi
 
     return (
         <div className="vehicle-card">
-            <div className="vehicle-image">📸 Image</div>
+            <div className="vehicle-image">Image</div>
 
             <div className="vehicle-info">
                 <h3>{vehicle.model}</h3>

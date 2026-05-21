@@ -1,6 +1,5 @@
 package com.example.Riderent.features.vehicles;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import com.example.Riderent.shared.user.model.UserProfile;
 import com.example.Riderent.shared.user.UserService;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleRequest request) {
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleResponse request) {
         UserProfile owner = userService.findByEmail(request.getOwnerEmail())
                 .orElseThrow(() -> new RuntimeException("Owner not found: " + request.getOwnerEmail()));
 
@@ -45,7 +44,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
+    public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
