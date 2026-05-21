@@ -109,6 +109,8 @@
 
 .vl-main-header {
     margin-bottom: 28px;
+    display: flex;
+    flex-direction: row;
 }
 .vl-title {
     font-family: 'Syne', sans-serif;
@@ -276,3 +278,18 @@
     .vl-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
     .vl-main { padding: 20px 16px; }
 }
+
+.add-btn {
+     padding: 5px 35px;
+     margin-left: auto;
+     background: #4A90E2;
+     font-size: 20px;
+    font-weight: 600;
+     color: white;
+     border-radius: 10px;
+     border: none;
+ }
+ .add-btn:hover{
+    opacity: 0.7;
+    cursor: pointer;
+  }

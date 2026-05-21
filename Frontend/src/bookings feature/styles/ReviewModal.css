@@ -1,0 +1,74 @@
+/* Review Modal */
+.review-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.review-modal {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.review-modal h2 { margin: 0 0 8px; }
+.review-modal p { color: var(--ink-light); margin-bottom: 20px; }
+
+.stars {
+    font-size: 42px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+}
+
+.star {
+    color: #ddd;
+    transition: color 0.1s;
+}
+
+.star.filled {
+    color: #fbbf24;
+}
+
+.review-modal textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-actions button:first-child {
+    background: #f1f5f9;
+    color: var(--ink);
+}
+
+.modal-actions button:last-child {
+    background: var(--accent);
+    color: white;
+}

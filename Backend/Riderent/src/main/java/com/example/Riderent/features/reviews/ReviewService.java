@@ -49,10 +49,13 @@ public class ReviewService {
         review.setBooking(booking);
         review.setBookerName(booking.getBooker().getFullName());
         review.setRating(request.getRating());
-        review.setComment(request.getComment());
+        review.setComment(request.getComment() != null ? request.getComment().trim() : "");
         review.setCreatedAt(LocalDateTime.now());
 
         Review saved = reviewRepository.save(review);
+
+        updateVehicleRating(booking.getVehicle().getId());
+
         return toResponse(saved);
     }
 
@@ -74,5 +77,24 @@ public class ReviewService {
         res.setComment(review.getComment());
         res.setCreatedAt(review.getCreatedAt());
         return res;
+    }
+
+    private void updateVehicleRating(Long vehicleId) {
+        List<Review> reviews = reviewRepository.findByVehicle(
+                vehicleRepository.findById(vehicleId).orElseThrow()
+        );
+
+        if (reviews.isEmpty()) {
+            return;
+        }
+
+        double average = reviews.stream()
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow();
+        vehicle.setRating(Math.round(average * 10.0) / 10.0);
+        vehicleRepository.save(vehicle);
     }
 }

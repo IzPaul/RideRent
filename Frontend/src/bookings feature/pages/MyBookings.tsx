@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../../shared/Navbar.tsx';
 import api from '../../api/axiosConfig';
 import '../styles/MyBookings.css';
+import ReviewModal from '../components/ReviewModal.tsx';
 
 interface Booking {
     id: number;
@@ -16,6 +17,13 @@ interface Booking {
     bookerName: string;
 }
 
+interface ReviewModalProps {
+    bookingId: number;
+    vehicleModel: string;
+    onClose: () => void;
+    onReviewSubmitted: () => void;
+}
+
 const STATUS_META: Record<string, { label: string; cls: string }> = {
     PENDING:   { label: 'Pending',   cls: 'status-pending'   },
     CONFIRMED: { label: 'Confirmed', cls: 'status-confirmed' },
@@ -26,7 +34,9 @@ const STATUS_META: Record<string, { label: string; cls: string }> = {
 export default function MyBookings() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
+    const [activeReviewBooking, setActiveReviewBooking] = useState<Booking | null>(null);
     const navigate = useNavigate();
+    const toggleModal = () => setIsReviewModalOpen(!isReviewModalOpen);
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -50,6 +60,8 @@ export default function MyBookings() {
 
     const fmt = (d: string) => new Date(d).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
     const days = (s: string, e: string) => Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000);
+
+    const canReview = (status: string) => status === 'CONFIRMED' || status === 'COMPLETED';
 
     return (
         <>
@@ -125,6 +137,15 @@ export default function MyBookings() {
                                                     Cancel
                                                 </button>
                                             )}
+
+                                            {canReview(b.status) && (
+                                                <button
+                                                    className="mb-btn mb-btn-review"
+                                                    onClick={() => setActiveReviewBooking(b)}
+                                                >
+                                                    Rate
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -133,6 +154,22 @@ export default function MyBookings() {
                     </div>
                 )}
             </div>
+
+            {activeReviewBooking && (
+                <ReviewModal
+                    bookingId={activeReviewBooking.id}
+                    vehicleModel={activeReviewBooking.vehicleModel}
+                    onClose={() => setActiveReviewBooking(null)}
+                    onReviewSubmitted={() => {
+                        setActiveReviewBooking(null);
+                        const email = localStorage.getItem('email');
+                        if (email) {
+                            api.get(`/api/bookings/my-bookings?email=${encodeURIComponent(email)}`)
+                                .then(r => setBookings(r.data));
+                        }
+                    }}
+                />
+            )}
         </>
     );
 }

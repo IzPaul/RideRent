@@ -1,8 +1,10 @@
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../shared/Navbar.tsx'
 import AddVehicleModal from "../components/AddVehicleModal.tsx";
 import api from '../../api/axiosConfig';
 import VehicleListCard from '../components/VehicleListCard.tsx';
+import '../styles/vehiclelisting.css';
 
 export default function MyVehicles(){
     const [filtered, setFiltered] = useState<any[]>([]);
@@ -17,11 +19,10 @@ export default function MyVehicles(){
         const fetchVehicles = async () => {
             try {
                 const storedEmail = localStorage.getItem("email");
-                const response = await api.get(
-                    `/api/vehicles/my-vehicles?email=${storedEmail}`
-                );
-
-                setVehicles(response.data);
+                const r = await api.get(`/api/vehicles/my-vehicles?email=${storedEmail}`)
+                .then(r => { setVehicles(r.data); setFiltered(r.data); })
+                .catch(console.error)
+                .finally(() => setLoading(false));
             } catch (err) {
                 console.error("Failed to fetch vehicles", err);
             } finally {
@@ -31,6 +32,20 @@ export default function MyVehicles(){
 
         fetchVehicles();
     }, []);
+
+    useEffect(() => {
+        let result = vehicles;
+        if (filters.type) result = result.filter(v => v.type === filters.type);
+        if (filters.region) result = result.filter(v => v.address?.region?.toLowerCase().includes(filters.region.toLowerCase()));
+        if (filters.province) result = result.filter(v => v.address?.province?.toLowerCase().includes(filters.province.toLowerCase()));
+        if (filters.city) result = result.filter(v => v.address?.city?.toLowerCase().includes(filters.city.toLowerCase()));
+        setFiltered(result);
+    }, [filters, vehicles]);
+
+    const renderStars = (rating: number) => {
+        const full = Math.floor(rating || 0);
+        return '★'.repeat(full) + '☆'.repeat(5 - full);
+    };
 
     return(
         <>
@@ -73,7 +88,7 @@ export default function MyVehicles(){
                     </div>
                 </aside>
 
-                <main className="listings">
+                <main className="vl-main">
                     <div className="vl-main-header">
                         <div>
                             <h1 className="vl-title">My Vehicles</h1>
@@ -84,22 +99,24 @@ export default function MyVehicles(){
                             {isModalOpen && <AddVehicleModal toggleModal={toggleModal} />}
                         </div>
                     </div>
-
-                    <div className="listing-container">
-                        {loading ? (
-                            <div className="vehicle-card">
-                                <p>Loading vehicles...</p>
-                            </div>
-                        ) : vehicles.length === 0 ? (
-                            <div className="vehicle-card">
-                                <p>No vehicles found. Add your first listing!</p>
-                            </div>
-                        ) : (
-                            vehicles.map((vehicle: any) => (
-                                 <VehicleListCard vehicle={vehicle}/>
-                            ))
-                        )}
-                    </div>
+                    {loading ? (
+                        <div className="vl-loading">
+                            <div className="vl-spinner" />
+                            <p>Finding vehicles…</p>
+                        </div>
+                    ) : filtered.length === 0 ? (
+                        <div className="vl-empty">
+                            <h3>No vehicles found</h3>
+                            <p>Try adjusting your filters</p>
+                            <button className="vl-reset-btn" onClick={resetFilters}>Clear Filters</button>
+                        </div>
+                    ) : (
+                        <div className="vl-grid">
+                            {filtered.map((v: any, i: number) => (
+                                <VehicleListCard v={v} i={i}/>
+                            ))}
+                        </div>
+                    )}
                 </main>
             </div>
         </>

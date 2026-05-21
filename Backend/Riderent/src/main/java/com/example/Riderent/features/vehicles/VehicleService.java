@@ -1,5 +1,6 @@
 package com.example.Riderent.features.vehicles;
 
+import com.example.Riderent.features.bookings.BookingRepository;
 import com.example.Riderent.shared.user.model.UserProfile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +16,12 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
-    public VehicleService(VehicleRepository vehicleRepository) {
+
+    private final BookingRepository bookingRepository;
+
+    public VehicleService(VehicleRepository vehicleRepository, BookingRepository bookingRepository) {
         this.vehicleRepository = vehicleRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public Vehicle saveVehicle(Vehicle vehicle) {
@@ -28,7 +33,7 @@ public class VehicleService {
     }
 
     public List<VehicleResponse> getVehiclesByOwnerAsResponse(UserProfile owner) {
-        return vehicleRepository.findByOwner(owner).stream().map(this::convertToResponseDto).collect(Collectors.toList());
+        return getVehiclesByOwnerAsResponseWithPendingCount(owner);  // reuse new logic
     }
 
     public List<Vehicle> getVehiclesByOwner(UserProfile owner) {
@@ -77,5 +82,18 @@ public class VehicleService {
             dto.setImage(Base64.getEncoder().encodeToString(vehicle.getImage()));
         }
         return dto;
+    }
+
+    public List<VehicleResponse> getVehiclesByOwnerAsResponseWithPendingCount(UserProfile owner) {
+        List<Vehicle> vehicles = vehicleRepository.findByOwner(owner);
+
+        return vehicles.stream().map(vehicle -> {
+            VehicleResponse dto = convertToResponseDto(vehicle);
+
+            long pendingCount = bookingRepository.countByVehicleAndStatus(vehicle, "PENDING");
+            dto.setPendingBookings((int) pendingCount);
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

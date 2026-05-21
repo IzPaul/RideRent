@@ -90,7 +90,6 @@ export default function VehicleListing() {
                         </div>
                     ) : filtered.length === 0 ? (
                         <div className="vl-empty">
-                            <span className="vl-empty-icon">🔍</span>
                             <h3>No vehicles found</h3>
                             <p>Try adjusting your filters</p>
                             <button className="vl-reset-btn" onClick={resetFilters}>Clear Filters</button>

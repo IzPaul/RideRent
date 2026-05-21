@@ -71,6 +71,7 @@ public class VehicleController {
     public ResponseEntity<List<VehicleResponse>> getMyVehicles(@RequestParam("email") String email) {
         UserProfile owner = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         return ResponseEntity.ok(vehicleService.getVehiclesByOwnerAsResponse(owner));
     }
 

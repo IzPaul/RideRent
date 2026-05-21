@@ -11,6 +11,7 @@ public class VehicleResponse {
     private String ownerName;
     private String ownerPhone;
     private Vehicle.Address address;
+    private int pendingBookings = 0;
     private String image; // base64
 
     public VehicleResponse() {}
@@ -44,6 +45,9 @@ public class VehicleResponse {
 
     public Vehicle.Address getAddress() { return address; }
     public void setAddress(Vehicle.Address address) { this.address = address; }
+
+    public int getPendingBookings() { return pendingBookings; }
+    public void setPendingBookings(int pendingBookings) { this.pendingBookings = pendingBookings; }
 
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }

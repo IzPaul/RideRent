@@ -94,13 +94,15 @@ export default function MyVehicleDetails() {
                     {/* Sidebar */}
                     <aside className="mvd-sidebar">
                         <div className="mvd-image-box">
-                            <div className="mvd-image-placeholder">
-                                <span>🚗</span>
-                                <p>No Image</p>
+                            <div className="card-img">
+                                {vehicle.image
+                                    ? <img src={`data:image/jpeg;base64,${vehicle.image}`} alt={vehicle.model} />
+                                    : <><span>🚗</span><p>No Image</p></>
+                                }
                             </div>
                         </div>
                         <button className="mvd-edit-btn" onClick={() => setIsEditModalOpen(true)}>
-                            ✏️ Edit Details
+                            Edit Details
                         </button>
                         <div className="mvd-sidebar-stats">
                             <div className="mvd-stat">

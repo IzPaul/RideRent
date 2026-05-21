@@ -27,11 +27,11 @@
 }
 
 .mb-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 40px;
-    font-weight: 400;
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
     color: var(--ink);
-    margin: 0 0 6px;
+    margin: 0 0 4px;
     letter-spacing: -0.5px;
 }
 
@@ -237,4 +237,12 @@
     .mb-page { padding: 24px 16px; }
     .mb-title { font-size: 28px; }
     .mb-grid { grid-template-columns: 1fr; }
+}
+.mb-btn-review {
+    background: #10b981;
+    color: white;
+}
+
+.mb-btn-review:hover {
+    background: #059669;
 }

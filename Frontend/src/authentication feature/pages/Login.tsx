@@ -15,9 +15,9 @@ export default function Login(){
     const showError = (message: React.SetStateAction<string>) => {
         setError("❗"+message);
 
-        // setTimeout(() => {
-        //     setError("");
-        // },3000);
+        setTimeout(() => {
+            setError("");
+        },3000);
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export default function Login(){
                     <h2>Welcome to RideRent</h2>
                     <p className="subtitle">Please enter your details</p>
 
-                    <div className="error-alert">{error}</div>
+                    <div className={error && "error-alert"}>{error}</div>
 
                     <form onSubmit={handleSubmit}>
                     <input
