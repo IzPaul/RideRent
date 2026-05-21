@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicles")
+@CrossOrigin(origins = "*")
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -75,5 +76,10 @@ public class VehicleController {
     public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
         vehicleService.deleteVehicle(id);
         return ResponseEntity.ok("Vehicle deleted successfully");
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Vehicle Controller is working!";
     }
 }

@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import Navbar from '../../shared/Navbar.tsx'
-import "../styles/vehiclelisting.css";
 import AddVehicleModal from "../components/AddVehicleModal.tsx";
 import api from '../../api/axiosConfig';
 import VehicleListCard from '../components/VehicleListCard.tsx';

@@ -9,6 +9,7 @@ import Register from './authentication feature/pages/Register.tsx';
 import Profile from './profile feature/pages/Profile.tsx';
 import MyVehicles from './vehicles feature/pages/MyVehicles.tsx';
 import MyVehicleDetails from './vehicles feature/pages/MyVehicleDetails.tsx';
+import VehicleDetails from './vehicles feature/pages/VehicleDetails.tsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
       <Route path='/register' element={<Register />} />
       <Route path='/profile' element={<Profile />} />
       <Route path="/my-vehicles/:id" element={<MyVehicleDetails />} />
+      <Route path="/vehicles/:id" element={<VehicleDetails />} />
     </Routes>
     </BrowserRouter>
   </React.StrictMode>
