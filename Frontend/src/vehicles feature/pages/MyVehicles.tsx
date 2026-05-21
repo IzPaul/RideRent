@@ -5,6 +5,14 @@ import api from '../../api/axiosConfig';
 import VehicleListCard from '../components/VehicleListCard.tsx';
 
 export default function MyVehicles(){
+    const [filtered, setFiltered] = useState<any[]>([]);
+    const [filters, setFilters] = useState({ type: '', region: '', province: '', city: '' });
+    const [vehicles, setVehicles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const resetFilters = () => setFilters({ type: '', region: '', province: '', city: '' });
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
+
     useEffect(() => {
         const fetchVehicles = async () => {
             try {
@@ -24,54 +32,53 @@ export default function MyVehicles(){
         fetchVehicles();
     }, []);
 
-
-
-    const [vehicles, setVehicles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
-
     return(
         <>
             <Navbar />
-            <div className="vehicle-page">
+            <div className="vl-page">
 
-                <div className="filters">
-                    <div className="filters-header">
-                    <h3>Filters</h3>
-                    <button className="reset-btn">Reset Filters</button>
+                <aside className="vl-sidebar">
+                    <div className="vl-sidebar-header">
+                        <span className="vl-filter-icon">⚙</span>
+                        <h3>Filters</h3>
+                        <button className="vl-reset" onClick={resetFilters}>Reset</button>
                     </div>
 
-                    <div className="filter-group">
-                    <label>Car Type:</label>
-                    <select>
-                        <option value="">Select</option>
-                        <option value="car">Car</option>
-                        <option value="bike">Bike</option>
-                        <option value="motorcycle">Motorcycle</option>
-                    </select>
+                    <div className="vl-filter-group">
+                        <label>Vehicle Type</label>
+                        <select value={filters.type} onChange={e => setFilters(p => ({ ...p, type: e.target.value }))}>
+                            <option value="">All Types</option>
+                            <option>Sedan</option><option>SUV</option><option>MPV</option>
+                            <option>Pickup</option><option>Van</option><option>Motorcycle</option>
+                        </select>
+                    </div>
+                    <div className="vl-filter-group">
+                        <label>Region</label>
+                        <input placeholder="e.g. Region VII" value={filters.region}
+                            onChange={e => setFilters(p => ({ ...p, region: e.target.value }))} />
+                    </div>
+                    <div className="vl-filter-group">
+                        <label>Province</label>
+                        <input placeholder="e.g. Cebu" value={filters.province}
+                            onChange={e => setFilters(p => ({ ...p, province: e.target.value }))} />
+                    </div>
+                    <div className="vl-filter-group">
+                        <label>City</label>
+                        <input placeholder="e.g. Cebu City" value={filters.city}
+                            onChange={e => setFilters(p => ({ ...p, city: e.target.value }))} />
                     </div>
 
-                    <div className="filter-group">
-                    <label>Region:</label>
-                    <input type="text" />
+                    <div className="vl-results-count">
+                        {!loading && <span>{filtered.length} vehicle{filtered.length !== 1 ? 's' : ''} found</span>}
                     </div>
+                </aside>
 
-                    <div className="filter-group">
-                    <label>Province:</label>
-                    <input type="text" />
-                    </div>
-
-                    <div className="filter-group">
-                    <label>City:</label>
-                    <input type="text" />
-                    </div>
-                </div>
-
-                <div className="listings">
-                    <div className="listing-headers">
-                        <h1>My Vehicle Listings</h1>
+                <main className="listings">
+                    <div className="vl-main-header">
+                        <div>
+                            <h1 className="vl-title">My Vehicles</h1>
+                            <p className="vl-sub">Track your listed vehicles</p>
+                        </div>
                         <button className="add-btn" onClick={toggleModal}>Add Listing</button>
                         <div className="vehicle-modal-container">
                             {isModalOpen && <AddVehicleModal toggleModal={toggleModal} />}
@@ -93,7 +100,7 @@ export default function MyVehicles(){
                             ))
                         )}
                     </div>
-                </div>
+                </main>
             </div>
         </>
     );
