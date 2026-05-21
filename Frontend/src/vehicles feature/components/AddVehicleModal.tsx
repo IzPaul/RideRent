@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import api from '../../api/axiosConfig';
+import { usePhilippineGeography } from '../../shared/utils/PhilippinesGeography.js';
 import "../styles/addVehicleModal.css";
 
 interface AddVehicleModalProps {
@@ -16,6 +17,8 @@ export default function AddVehicleModal({
     onSuccess
 }: AddVehicleModalProps) {
 
+    const { getRegions, getProvincesByRegion } = usePhilippineGeography();
+
     const [form, setForm] = useState({
         model: "",
         description: "",
@@ -31,6 +34,10 @@ export default function AddVehicleModal({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    const availableProvinces = useMemo(() => {
+        return getProvincesByRegion(form.region);
+    }, [form.region, getProvincesByRegion]);
 
     useEffect(() => {
         if (isEditMode && vehicle) {
@@ -49,16 +56,17 @@ export default function AddVehicleModal({
         }
     }, [isEditMode, vehicle]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
         setError("");
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                setError("Image must be smaller than 5MB");
+            if (file.size > 1 * 1024 * 1024) {
+                setError("Image must be smaller than 1MB");
                 return;
             }
             setImage(file);
@@ -96,9 +104,7 @@ export default function AddVehicleModal({
         formData.append("province", form.province);
         formData.append("city", form.city);
 
-        if (image) {
-            formData.append("image", image);
-        }
+        if (image) formData.append("image", image);
 
         try {
             let response;
@@ -142,22 +148,25 @@ export default function AddVehicleModal({
                 {success && <div className="success-alert">{success}</div>}
 
                 <form onSubmit={handleSubmit} className="add-vehicle-form">
+                    {/* Image Upload - unchanged */}
                     <div className="image-upload-section">
                         <label className="image-label">Vehicle Image <span className="required">*</span></label>
                         <div className="image-preview-container">
                             {imagePreview ? (
-                                <img src={imagePreview} alt="Preview" className="image-preview" />
+                                <img src={imagePreview} alt="Preview" className="image-preview"
+                                    style={{
+                                        width: '150px',
+                                        height: '150px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px'
+                                    }}
+                                />
                             ) : (
                                 <div className="image-placeholder-upload">
                                     <p>Click to upload image</p>
                                 </div>
                             )}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="image-input"
-                            />
+                            <input type="file" accept="image/*" onChange={handleImageChange} className="image-input" />
                         </div>
                         <small>Max 5MB. Recommended: 1200x800px</small>
                     </div>
@@ -171,15 +180,15 @@ export default function AddVehicleModal({
                         required
                     />
 
-                    <select name="type" value={form.type} onChange={handleChange} required>
-                        <option value="">Select Vehicle Type</option>
-                        <option value="Sedan">Sedan</option>
-                        <option value="SUV">SUV</option>
-                        <option value="MPV">MPV</option>
-                        <option value="Pickup">Pickup</option>
-                        <option value="Van">Van</option>
-                        <option value="Motorcycle">Motorcycle</option>
-                    </select>
+                    {/* Vehicle Type as Text Field */}
+                    <input
+                        type="text"
+                        name="type"
+                        placeholder="Vehicle Type (e.g. Sedan, SUV, MPV...)"
+                        value={form.type}
+                        onChange={handleChange}
+                        required
+                    />
 
                     <input
                         type="number"
@@ -192,16 +201,42 @@ export default function AddVehicleModal({
 
                     <div className="address-group">
                         <h3>Location</h3>
-                        <input type="text" name="region" placeholder="Region (e.g. Central Visayas)" value={form.region} onChange={handleChange} required />
-                        <input type="text" name="province" placeholder="Province (e.g. Cebu)" value={form.province} onChange={handleChange} required />
-                        <input type="text" name="city" placeholder="City (e.g. Cebu City)" value={form.city} onChange={handleChange} required />
+
+                        <select name="region" value={form.region} onChange={handleChange} required>
+                            <option value="">Select Region</option>
+                            {getRegions().map(region => (
+                                <option key={region} value={region}>{region}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            name="province"
+                            value={form.province}
+                            onChange={handleChange}
+                            required
+                            disabled={!form.region}
+                        >
+                            <option value="">Select Province</option>
+                            {availableProvinces.map(province => (
+                                <option key={province} value={province}>{province}</option>
+                            ))}
+                        </select>
+
+                        <input
+                            type="text"
+                            name="city"
+                            placeholder="City (e.g. Cebu City)"
+                            value={form.city}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <textarea
                         name="description"
                         placeholder="Detailed description of the vehicle..."
                         value={form.description}
-                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        onChange={handleChange}
                         rows={4}
                         required
                     />

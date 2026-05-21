@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../shared/Navbar.tsx';
 import api from '../../api/axiosConfig';
+import { usePhilippineGeography } from '../../shared/utils/PhilippinesGeography.js';
 import '../styles/vehiclelisting.css';
 
 export default function VehicleListing() {
@@ -11,19 +12,56 @@ export default function VehicleListing() {
     const [filters, setFilters] = useState({ type: '', region: '', province: '', city: '' });
     const navigate = useNavigate();
 
+    const { getRegions, getProvincesByRegion } = usePhilippineGeography();
+
+    // Dynamic Vehicle Types
+    const vehicleTypes = useMemo(() => {
+        const types = [...new Set(vehicles.map(v => v.type).filter(Boolean))];
+        return types.sort();
+    }, [vehicles]);
+
+    // Provinces based on selected region
+    const availableProvinces = useMemo(() => {
+        return getProvincesByRegion(filters.region);
+    }, [filters.region, getProvincesByRegion]);
+
     useEffect(() => {
         api.get('/api/vehicles/vehicle-listing')
-            .then(r => { setVehicles(r.data); setFiltered(r.data); })
+            .then(r => {
+                setVehicles(r.data);
+                setFiltered(r.data);
+            })
             .catch(console.error)
             .finally(() => setLoading(false));
     }, []);
 
+    // Reset province when region changes
     useEffect(() => {
-        let result = vehicles;
-        if (filters.type) result = result.filter(v => v.type === filters.type);
-        if (filters.region) result = result.filter(v => v.address?.region?.toLowerCase().includes(filters.region.toLowerCase()));
-        if (filters.province) result = result.filter(v => v.address?.province?.toLowerCase().includes(filters.province.toLowerCase()));
-        if (filters.city) result = result.filter(v => v.address?.city?.toLowerCase().includes(filters.city.toLowerCase()));
+        if (filters.region === '') {
+            setFilters(prev => ({ ...prev, province: '' }));
+        }
+    }, [filters.region]);
+
+    // Apply Filters
+    useEffect(() => {
+        let result = [...vehicles];
+
+        if (filters.type) {
+            result = result.filter(v => v.type === filters.type);
+        }
+        if (filters.region) {
+            result = result.filter(v => v.address?.region === filters.region);
+        }
+        if (filters.province) {
+            result = result.filter(v => v.address?.province === filters.province);
+        }
+        if (filters.city) {
+            const citySearch = filters.city.toLowerCase().trim();
+            result = result.filter(v =>
+                v.address?.city?.toLowerCase().includes(citySearch)
+            );
+        }
+
         setFiltered(result);
     }, [filters, vehicles]);
 
@@ -45,28 +83,57 @@ export default function VehicleListing() {
                         <button className="vl-reset" onClick={resetFilters}>Reset</button>
                     </div>
 
+                    {/* Dynamic Vehicle Type */}
                     <div className="vl-filter-group">
                         <label>Vehicle Type</label>
-                        <select value={filters.type} onChange={e => setFilters(p => ({ ...p, type: e.target.value }))}>
+                        <select
+                            value={filters.type}
+                            onChange={e => setFilters(p => ({ ...p, type: e.target.value }))}
+                        >
                             <option value="">All Types</option>
-                            <option>Sedan</option><option>SUV</option><option>MPV</option>
-                            <option>Pickup</option><option>Van</option><option>Motorcycle</option>
+                            {vehicleTypes.map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
                         </select>
                     </div>
+
+                    {/* Region Dropdown */}
                     <div className="vl-filter-group">
                         <label>Region</label>
-                        <input placeholder="e.g. Region VII" value={filters.region}
-                            onChange={e => setFilters(p => ({ ...p, region: e.target.value }))} />
+                        <select
+                            value={filters.region}
+                            onChange={e => setFilters(p => ({ ...p, region: e.target.value, province: '' }))}
+                        >
+                            <option value="">All Regions</option>
+                            {getRegions().map(region => (
+                                <option key={region} value={region}>{region}</option>
+                            ))}
+                        </select>
                     </div>
+
+                    {/* Province Dropdown (Cascading) */}
                     <div className="vl-filter-group">
                         <label>Province</label>
-                        <input placeholder="e.g. Cebu" value={filters.province}
-                            onChange={e => setFilters(p => ({ ...p, province: e.target.value }))} />
+                        <select
+                            value={filters.province}
+                            onChange={e => setFilters(p => ({ ...p, province: e.target.value }))}
+                            disabled={!filters.region}
+                        >
+                            <option value="">All Provinces</option>
+                            {availableProvinces.map(province => (
+                                <option key={province} value={province}>{province}</option>
+                            ))}
+                        </select>
                     </div>
+
+                    {/* City Text Field */}
                     <div className="vl-filter-group">
                         <label>City</label>
-                        <input placeholder="e.g. Cebu City" value={filters.city}
-                            onChange={e => setFilters(p => ({ ...p, city: e.target.value }))} />
+                        <input
+                            placeholder="e.g. Cebu City"
+                            value={filters.city}
+                            onChange={e => setFilters(p => ({ ...p, city: e.target.value }))}
+                        />
                     </div>
 
                     <div className="vl-results-count">
@@ -74,7 +141,6 @@ export default function VehicleListing() {
                     </div>
                 </aside>
 
-                {/* Main */}
                 <main className="vl-main">
                     <div className="vl-main-header">
                         <div>
