@@ -1,122 +1,247 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../shared/Navbar.tsx';
-import "../styles/vehiclelisting.css";
 import api from '../../api/axiosConfig';
-import AddVehicleModal from "../components/AddVehicleModal.tsx";
+import AddVehicleModal from '../components/AddVehicleModal.tsx';
+import '../styles/myvehicledetails.css';
+
+interface Booking {
+    id: number;
+    bookerName: string;
+    bookerEmail: string;
+    startDate: string;
+    endDate: string;
+    totalCost: number;
+    status: string;
+    extraInfo: string;
+}
+
+const STATUS_META: Record<string, { label: string; cls: string }> = {
+    PENDING:   { label: 'Pending',   cls: 'st-pending'   },
+    CONFIRMED: { label: 'Confirmed', cls: 'st-confirmed' },
+    CANCELLED: { label: 'Cancelled', cls: 'st-cancelled' },
+    COMPLETED: { label: 'Completed', cls: 'st-completed' },
+};
 
 export default function MyVehicleDetails() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
     const [vehicle, setVehicle] = useState<any>(null);
+    const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
+    const [bookingsLoading, setBookingsLoading] = useState(true);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     useEffect(() => {
-        const fetchVehicle = async () => {
-            if (!id) return;
-            try {
-                const response = await api.get(`/api/vehicles/${id}`);
-                setVehicle(response.data);
-            } catch (err) {
-                console.error("Failed to fetch vehicle details", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (!id) return;
+        api.get(`/api/vehicles/${id}`)
+            .then(r => setVehicle({ ...r.data, id: Number(id) }))
+            .catch(console.error)
+            .finally(() => setLoading(false));
 
-        fetchVehicle();
+        api.get(`/api/bookings/vehicle/${id}`)
+            .then(r => setBookings(r.data))
+            .catch(console.error)
+            .finally(() => setBookingsLoading(false));
     }, [id]);
 
-    const toggleEditModal = () => setIsEditModalOpen(!isEditModalOpen);
-
-    const handleVehicleUpdated = (updatedVehicle: any) => {
-        setVehicle(updatedVehicle);
+    const handleVehicleUpdated = (updated: any) => {
+        setVehicle(updated);
         setIsEditModalOpen(false);
     };
 
-    if (loading) {
-        return (
-            <div className="vehicle-page">
-                <Navbar />
-                <div className="loading">Loading vehicle details...</div>
-            </div>
-        );
-    }
+    const handleStatusUpdate = async (bookingId: number, action: 'confirm' | 'cancel') => {
+        const ownerEmail = localStorage.getItem('email') || '';
+        const confirmMsg = action === 'cancel' ? 'Cancel this booking?' : 'Confirm this booking?';
+        if (!window.confirm(confirmMsg)) return;
+        try {
+            const res = await api.put(`/api/bookings/${bookingId}/${action}?email=${encodeURIComponent(ownerEmail)}`);
+            setBookings(prev => prev.map(b => b.id === bookingId ? res.data : b));
+        } catch (err: any) {
+            alert(err.response?.data?.message || `Failed to ${action} booking.`);
+        }
+    };
 
-    if (!vehicle) {
-        return (
-            <div className="vehicle-page">
-                <Navbar />
-                <div className="error">Vehicle not found.</div>
-            </div>
-        );
-    }
+    const fmt = (d: string) => new Date(d).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    const days = (s: string, e: string) => Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000);
+
+    if (loading) return (
+        <>
+            <Navbar />
+            <div className="mvd-loading"><div className="mvd-spinner" /><p>Loading vehicle…</p></div>
+        </>
+    );
+
+    if (!vehicle) return (
+        <>
+            <Navbar />
+            <div className="mvd-loading"><p>Vehicle not found.</p><button onClick={() => navigate(-1)}>Go Back</button></div>
+        </>
+    );
 
     return (
         <>
             <Navbar />
-            <div className="vehicle-page details-page">
-                <div className="details-container">
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                        ← Back to My Listings
-                    </button>
+            <div className="mvd-page">
+                {/* Back */}
+                <button className="mvd-back" onClick={() => navigate(-1)}>
+                    ← My Listings
+                </button>
 
-                    <div className="details-header">
-                        <h1>{vehicle.model}</h1>
-                        <div className="rating-large">
-                            {"★".repeat(Math.floor(vehicle.rating || 0))}
-                            {"☆".repeat(5 - Math.floor(vehicle.rating || 0))}
-                            <span> ({vehicle.rating || 0})</span>
-                        </div>
-                    </div>
-
-                    <div className="details-content">
-                        <div className="vehicle-image-large">
-                            <div className="image-placeholder">Vehicle Image</div>
-
-                        </div>
-
-                        <div className="details-info">
-                            <div className="info-row">
-                                <strong>Vehicle Type:</strong>
-                                <span>{vehicle.type}</span>
+                {/* Top section: sidebar + info */}
+                <div className="mvd-top">
+                    {/* Sidebar */}
+                    <aside className="mvd-sidebar">
+                        <div className="mvd-image-box">
+                            <div className="mvd-image-placeholder">
+                                <span>🚗</span>
+                                <p>No Image</p>
                             </div>
-                            <div className="info-row">
-                                <strong>Daily Rate:</strong>
-                                <span className="price">₱{vehicle.dailyRate}</span>
+                        </div>
+                        <button className="mvd-edit-btn" onClick={() => setIsEditModalOpen(true)}>
+                            ✏️ Edit Details
+                        </button>
+                        <div className="mvd-sidebar-stats">
+                            <div className="mvd-stat">
+                                <span className="mvd-stat-val">₱{vehicle.dailyRate}</span>
+                                <span className="mvd-stat-lbl">per day</span>
                             </div>
-                            <div className="info-row">
-                                <strong>Location:</strong>
-                                <span>
-                                    {vehicle.address?.region}, {vehicle.address?.province}, {vehicle.address?.city}
+                            <div className="mvd-stat-divider" />
+                            <div className="mvd-stat">
+                                <span className="mvd-stat-val">{bookings.length}</span>
+                                <span className="mvd-stat-lbl">bookings</span>
+                            </div>
+                            <div className="mvd-stat-divider" />
+                            <div className="mvd-stat">
+                                <span className="mvd-stat-val">
+                                    {"★".repeat(Math.floor(vehicle.rating || 0))}
+                                    {!vehicle.rating ? "—" : ""}
+                                </span>
+                                <span className="mvd-stat-lbl">{vehicle.rating || 0} rating</span>
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* Vehicle info */}
+                    <div className="mvd-info">
+                        <div className="mvd-info-header">
+                            <div>
+                                <h1 className="mvd-model">{vehicle.model}</h1>
+                                <span className="mvd-type-badge">{vehicle.type}</span>
+                            </div>
+                        </div>
+
+                        <div className="mvd-info-grid">
+                            <div className="mvd-info-item">
+                                <span className="mvd-info-lbl">Location</span>
+                                <span className="mvd-info-val">
+                                    {[vehicle.address?.city, vehicle.address?.province, vehicle.address?.region]
+                                        .filter(Boolean).join(', ')}
                                 </span>
                             </div>
-                            <div className="info-row">
-                                <strong>Description:</strong>
-                                <span>{vehicle.description}</span>
+                            <div className="mvd-info-item">
+                                <span className="mvd-info-lbl">Daily Rate</span>
+                                <span className="mvd-info-val mvd-price">₱{vehicle.dailyRate?.toLocaleString()}</span>
+                            </div>
+                            <div className="mvd-info-item mvd-info-full">
+                                <span className="mvd-info-lbl">Description</span>
+                                <span className="mvd-info-val">{vehicle.description || '—'}</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="action-buttons">
-                        <button className="edit-btn" onClick={toggleEditModal}>
-                            Edit Details
-                        </button>
-                        {/* Delete button can be added later */}
                     </div>
                 </div>
 
-                {isEditModalOpen && (
-                    <AddVehicleModal
-                        toggleModal={toggleEditModal}
-                        vehicle={vehicle}
-                        isEditMode={true}
-                        onSuccess={handleVehicleUpdated}
-                    />
-                )}
+                {/* Bookings table */}
+                <div className="mvd-bookings-section">
+                    <h2 className="mvd-section-title">
+                        Bookings
+                        {!bookingsLoading && (
+                            <span className="mvd-booking-count">{bookings.length}</span>
+                        )}
+                    </h2>
+
+                    {bookingsLoading ? (
+                        <div className="mvd-table-loading"><div className="mvd-spinner" /></div>
+                    ) : bookings.length === 0 ? (
+                        <div className="mvd-no-bookings">
+                            <p>No bookings for this vehicle yet.</p>
+                        </div>
+                    ) : (
+                        <div className="mvd-table-wrap">
+                            <table className="mvd-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Renter</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Days</th>
+                                        <th>Total Cost</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {bookings.map((b, i) => {
+                                        const meta = STATUS_META[b.status] || STATUS_META.PENDING;
+                                        const d = days(b.startDate, b.endDate);
+                                        const canAct = b.status === 'PENDING' || b.status === 'CONFIRMED';
+                                        return (
+                                            <tr key={b.id} className="mvd-table-row">
+                                                <td className="mvd-td-id">{b.id}</td>
+                                                <td>
+                                                    <div className="mvd-renter">
+                                                        <span className="mvd-renter-name">{b.bookerName || '—'}</span>
+                                                        <span className="mvd-renter-email">{b.bookerEmail}</span>
+                                                    </div>
+                                                </td>
+                                                <td>{fmt(b.startDate)}</td>
+                                                <td>{fmt(b.endDate)}</td>
+                                                <td><span className="mvd-days-chip">{d}d</span></td>
+                                                <td className="mvd-td-cost">₱{b.totalCost.toLocaleString()}</td>
+                                                <td>
+                                                    <span className={`mvd-status ${meta.cls}`}>{meta.label}</span>
+                                                </td>
+                                                <td>
+                                                    <div className="mvd-row-actions">
+                                                        {b.status === 'PENDING' && (
+                                                            <button
+                                                                className="mvd-act-btn mvd-act-confirm"
+                                                                onClick={() => handleStatusUpdate(b.id, 'confirm')}
+                                                            >
+                                                                Confirm
+                                                            </button>
+                                                        )}
+                                                        {canAct && (
+                                                            <button
+                                                                className="mvd-act-btn mvd-act-cancel"
+                                                                onClick={() => handleStatusUpdate(b.id, 'cancel')}
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        )}
+                                                        {!canAct && <span className="mvd-no-action">—</span>}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {isEditModalOpen && (
+                <AddVehicleModal
+                    toggleModal={() => setIsEditModalOpen(false)}
+                    vehicle={vehicle}
+                    isEditMode={true}
+                    onSuccess={handleVehicleUpdated}
+                />
+            )}
         </>
     );
 }

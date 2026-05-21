@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --ink: #0f172a;
+    --ink-light: #475569;
+    --ink-faint: #94a3b8;
+    --surface: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --accent: #0ea5e9;
+    --accent-dark: #0284c7;
+    --green: #15803d;
+    --pending-bg: #fefce8; --pending-fg: #a16207;
+    --confirmed-bg: #f0fdf4; --confirmed-fg: #15803d;
+    --cancelled-bg: #fff1f2; --cancelled-fg: #be123c;
+    --completed-bg: #eff6ff; --completed-fg: #1d4ed8;
+}
+
+.mvd-page {
+    min-height: calc(100vh - 70px);
+    background: var(--surface);
+    padding: 40px 56px;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.mvd-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    gap: 12px;
+    color: var(--ink-light);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.mvd-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Back button */
+.mvd-back {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-light);
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+}
+.mvd-back:hover { color: var(--ink); }
+
+/* Top layout */
+.mvd-top {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    margin-bottom: 36px;
+}
+
+/* Sidebar */
+.mvd-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mvd-image-box {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mvd-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-faint);
+}
+.mvd-image-placeholder span { font-size: 40px; }
+.mvd-image-placeholder p { font-size: 12px; margin: 0; }
+
+.mvd-edit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+}
+.mvd-edit-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.mvd-sidebar-stats {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.mvd-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0;
+}
+.mvd-stat-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.mvd-stat-lbl {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-faint);
+    font-weight: 600;
+}
+.mvd-stat-divider {
+    height: 1px;
+    background: var(--border);
+}
+
+/* Info card */
+.mvd-info {
+    background: var(--card);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.mvd-info-header { display: flex; justify-content: space-between; align-items: flex-start; }
+
+.mvd-model {
+    font-family: 'DM Serif Display', serif;
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 10px;
+    letter-spacing: -0.5px;
+}
+
+.mvd-type-badge {
+    display: inline-block;
+    background: #f0f9ff;
+    color: var(--accent-dark);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.mvd-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
+.mvd-info-full { grid-column: 1 / -1; }
+
+.mvd-info-item { display: flex; flex-direction: column; gap: 4px; }
+.mvd-info-lbl {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+}
+.mvd-info-val { font-size: 15px; color: var(--ink); }
+.mvd-price { font-size: 22px; font-weight: 700; color: var(--green); }
+
+/* Bookings section */
+.mvd-bookings-section {
+    background: var(--card);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+}
+
+.mvd-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mvd-booking-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 9px;
+    border-radius: 20px;
+}
+
+.mvd-table-loading, .mvd-no-bookings {
+    text-align: center;
+    padding: 40px;
+    color: var(--ink-light);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.mvd-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.mvd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.mvd-table thead tr {
+    background: #f8fafc;
+    border-bottom: 2px solid var(--border);
+}
+
+.mvd-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+}
+
+.mvd-table-row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+.mvd-table-row:last-child { border-bottom: none; }
+.mvd-table-row:hover { background: #f8fafc; }
+
+.mvd-table td {
+    padding: 14px 16px;
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+.mvd-td-id { color: var(--ink-faint); font-size: 12px; }
+.mvd-td-cost { font-weight: 700; color: var(--green); }
+
+.mvd-renter { display: flex; flex-direction: column; gap: 2px; }
+.mvd-renter-name { font-weight: 500; }
+.mvd-renter-email { font-size: 12px; color: var(--ink-faint); }
+
+.mvd-days-chip {
+    display: inline-block;
+    background: #f0f9ff;
+    color: var(--accent-dark);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+/* Status */
+.mvd-status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.st-pending   { background: var(--pending-bg);   color: var(--pending-fg); }
+.st-confirmed { background: var(--confirmed-bg); color: var(--confirmed-fg); }
+.st-cancelled { background: var(--cancelled-bg); color: var(--cancelled-fg); }
+.st-completed { background: var(--completed-bg); color: var(--completed-fg); }
+
+/* Row actions */
+.mvd-row-actions { display: flex; gap: 6px; }
+
+.mvd-act-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.mvd-act-confirm {
+    background: #f0fdf4;
+    color: var(--green);
+    border-color: #86efac;
+}
+.mvd-act-confirm:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+}
+.mvd-act-cancel {
+    background: #fff1f2;
+    color: #be123c;
+    border-color: #fda4af;
+}
+.mvd-act-cancel:hover {
+    background: #be123c;
+    color: #fff;
+    border-color: #be123c;
+}
+.mvd-no-action { color: var(--ink-faint); font-size: 14px; }
+
+@media (max-width: 900px) {
+    .mvd-page { padding: 24px 16px; }
+    .mvd-top { grid-template-columns: 1fr; }
+    .mvd-info-grid { grid-template-columns: 1fr; }
+}
