@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from '../../api/axiosConfig';
 import "../styles/addVehicleModal.css";
 
 interface AddVehicleModalProps {
     toggleModal: () => void;
+    vehicle?: any;
+    isEditMode?: boolean;
+    onSuccess?: (updatedVehicle: any) => void;
 }
 
-export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
+export default function AddVehicleModal({
+    toggleModal,
+    vehicle,
+    isEditMode = false,
+    onSuccess
+}: AddVehicleModalProps) {
+
     const [form, setForm] = useState({
         model: "",
         description: "",
@@ -21,6 +30,21 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
+    // Pre-fill form in edit mode
+    useEffect(() => {
+        if (isEditMode && vehicle) {
+            setForm({
+                model: vehicle.model || "",
+                description: vehicle.description || "",
+                type: vehicle.type || "",
+                dailyRate: vehicle.dailyRate?.toString() || "",
+                region: vehicle.address?.region || "",
+                province: vehicle.address?.province || "",
+                city: vehicle.address?.city || "",
+            });
+        }
+    }, [isEditMode, vehicle]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
         setError("");
@@ -33,10 +57,8 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
         setSuccess("");
 
         const storedEmail = localStorage.getItem("email");
-        console.log("Stored Email:", storedEmail);
-
         if (!storedEmail) {
-            setError("You must be logged in to add a vehicle");
+            setError("You must be logged in");
             setLoading(false);
             return;
         }
@@ -45,6 +67,7 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
             model: form.model,
             type: form.type,
             dailyRate: parseFloat(form.dailyRate),
+            description: form.description,
             ownerEmail: storedEmail,
             address: {
                 region: form.region,
@@ -52,22 +75,32 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
                 city: form.city,
             }
         };
-        console.log("Sending vehicle data:", vehicleData);
 
         try {
-            const response = await api.post("/api/vehicles", vehicleData);
-            console.log("Response:", response.data);
+            let response;
+            if (isEditMode && vehicle?.id) {
+                // Update existing vehicle
+                response = await api.put(`/api/vehicles/${vehicle.id}`, vehicleData);
+            } else {
+                // Create new vehicle
+                response = await api.post("/api/vehicles", vehicleData);
+            }
 
             if (response.status === 200 || response.status === 201) {
-                setSuccess("Vehicle added successfully!");
+                setSuccess(isEditMode ? "Vehicle updated successfully!" : "Vehicle added successfully!");
+
                 setTimeout(() => {
-                    toggleModal();
-                    window.location.reload();
-                }, 1500);
+                    if (isEditMode && onSuccess) {
+                        onSuccess(response.data);
+                    } else {
+                        toggleModal();
+                        window.location.reload();
+                    }
+                }, 1200);
             }
         } catch (err: any) {
             console.error(err);
-            setError(err.response?.data?.message || "Failed to add vehicle");
+            setError(err.response?.data?.message || "Failed to save vehicle");
         } finally {
             setLoading(false);
         }
@@ -76,8 +109,8 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
     return (
         <div className="modal-overlay" onClick={toggleModal}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
-                <h2>Add New Vehicle</h2>
-                <p className="subtitle">Enter vehicle details</p>
+                <h2>{isEditMode ? "Edit Vehicle" : "Add New Vehicle"}</h2>
+                <p className="subtitle">{isEditMode ? "Update vehicle details" : "Enter vehicle details"}</p>
 
                 {error && <div className="error-alert">{error}</div>}
                 {success && <div className="success-alert">{success}</div>}
@@ -130,7 +163,7 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
                             Cancel
                         </button>
                         <button type="submit" className="primary-btn" disabled={loading}>
-                            {loading ? "Adding..." : "Add Vehicle"}
+                            {loading ? (isEditMode ? "Updating..." : "Adding...") : (isEditMode ? "Update Vehicle" : "Add Vehicle")}
                         </button>
                     </div>
                 </form>

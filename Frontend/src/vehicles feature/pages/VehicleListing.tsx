@@ -1,46 +1,30 @@
-
+import {useState, useEffect} from 'react';
 import Navbar from '../../shared/Navbar.tsx'
 import "../styles/vehiclelisting.css";
+import VehicleListCard from '../components/VehicleListCard.tsx';
 
 export default function VehicleListing(){
-    interface Vehicle {
-        id: number;
-        model: string;
-        type: string;
-        location: string;
-        rating: number;
-    }
+    const [vehicles, setVehicles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const dummyVehicles: Vehicle[] = [
-    {
-        id: 1,
-        model: "Toyota Corolla",
-        type: "Car",
-        location: "Philippines, Eastern Visayas, Leyte, Ormoc City",
-        rating: 4,
-    },
-    {
-        id: 2,
-        model: "Yamaha R15",
-        type: "Motorcycle",
-        location: "Philippines, Central Visayas, Cebu, Cebu City",
-        rating: 5,
-    },
-    {
-        id: 3,
-        model: "Bike de pedal",
-        type: "Bike",
-        location: "Philippines, Central Visayas, Cebu, Cebu City",
-        rating: 5,
-    },
-    {
-        id: 4,
-        model: "Tricycle",
-        type: "Motorcycle",
-        location: "Philippines, Eastern Visayas, Leyte, Ormoc City",
-        rating: 5,
-    },
-    ];
+    useEffect(() => {
+            const fetchVehicles = async () => {
+                try {
+                    const storedEmail = localStorage.getItem("email");
+                    const response = await api.get(
+                        `/api/vehicles/vehicle-listing`
+                    );
+
+                    setVehicles(response.data);
+                } catch (err) {
+                    console.error("Failed to fetch vehicles", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchVehicles();
+        }, []);
 
     return(
         <>
@@ -79,28 +63,27 @@ export default function VehicleListing(){
                 </div>
 
                 <div className="listings">
-                    <h1>Vehicle Listings</h1>
+                    <div className="listing-headers">
+                        <h1>Vehicle Listings</h1>
+                    </div>
 
                     <div className="listing-container">
-                    {dummyVehicles.map((vehicle) => (
-                        <div key={vehicle.id} className="vehicle-card">
-                        <div className="vehicle-image">Image</div>
-
-                        <div className="vehicle-info">
-                            <h3>{vehicle.model}</h3>
-                            <p>Vehicle Type: {vehicle.type}</p>
-                            <p>Location: {vehicle.location}</p>
-                        </div>
-
-                        <div className="vehicle-rating">
-                            {"★".repeat(vehicle.rating)}
-                            {"☆".repeat(5 - vehicle.rating)}
-                        </div>
-                        </div>
-                    ))}
+                        {loading ? (
+                            <div className="vehicle-card">
+                                <p>Loading vehicles...</p>
+                            </div>
+                        ) : vehicles.length === 0 ? (
+                            <div className="vehicle-card">
+                                <p>No vehicles found. Add your first listing!</p>
+                            </div>
+                        ) : (
+                            vehicles.map((vehicle: any) => (
+                                 <VehicleListCard vehicle={vehicle}/>
+                            ))
+                        )}
                     </div>
                 </div>
-                </div>
+            </div>
         </>
     );
 }

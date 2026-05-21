@@ -3,6 +3,7 @@ import Navbar from '../../shared/Navbar.tsx'
 import "../styles/vehiclelisting.css";
 import AddVehicleModal from "../components/AddVehicleModal.tsx";
 import api from '../../api/axiosConfig';
+import VehicleListCard from '../components/VehicleListCard.tsx';
 
 export default function MyVehicles(){
     useEffect(() => {
@@ -89,19 +90,7 @@ export default function MyVehicles(){
                             </div>
                         ) : (
                             vehicles.map((vehicle: any) => (
-                                 <div key={vehicle.id} className="vehicle-card">
-                                     <div className="vehicle-image">Image</div>
-                                     <div className="vehicle-info">
-                                         <h3>{vehicle.model}</h3>
-                                         <p>Vehicle Type: {vehicle.type}</p>
-                                         <p>Daily Rate: ₱{vehicle.dailyRate}</p>
-                                         <p>Location: {vehicle.address?.city}, {vehicle.address?.province}</p>
-                                     </div>
-                                     <div className="vehicle-rating">
-                                         {"★".repeat(Math.floor(vehicle.rating || 0))}
-                                         {"☆".repeat(5 - Math.floor(vehicle.rating))}
-                                     </div>
-                                 </div>
+                                 <VehicleListCard vehicle={vehicle}/>
                             ))
                         )}
                     </div>
