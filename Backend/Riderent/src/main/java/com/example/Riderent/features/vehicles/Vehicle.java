@@ -32,9 +32,10 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(String model, String type,Double dailyRate, Address address) {
+    public Vehicle(String model, String type, Double dailyRate, Address address) {
         this.model = model;
         this.type = type;
+        this.dailyRate = dailyRate;
         this.rating = 0.0;
         this.address = address;
     }

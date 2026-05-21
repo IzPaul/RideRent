@@ -37,6 +37,7 @@ public class VehicleController {
         vehicle.setOwner(owner);
         vehicle.setAddress(request.getAddress());
         vehicle.setRating(0.0);
+        System.out.println("Daily Rate: " + request.getDailyRate());
 
         Vehicle saved = vehicleService.saveVehicle(vehicle);
         System.out.println("SUCCESS - Vehicle ID: " + saved.getId() + ", Owner ID: " +
@@ -55,6 +56,19 @@ public class VehicleController {
         return vehicleService.getVehicleById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/my-vehicles")
+    public ResponseEntity<List<Vehicle>> getMyVehicles(
+            @RequestParam("email") String email) {
+
+        System.out.println("Received email: " + email);
+        UserProfile owner = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Vehicle> vehicles = vehicleService.getVehiclesByOwner(owner);
+
+        return ResponseEntity.ok(vehicles);
     }
 
     @PutMapping("/{id}")

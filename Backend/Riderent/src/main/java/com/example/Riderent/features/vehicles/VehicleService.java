@@ -1,5 +1,6 @@
 package com.example.Riderent.features.vehicles;
 
+import com.example.Riderent.shared.user.model.UserProfile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,10 @@ public class VehicleService {
 
     public Optional<Vehicle> getVehicleById(Long id) {
         return vehicleRepository.findById(id);
+    }
+
+    public List<Vehicle> getVehiclesByOwner(UserProfile owner) {
+        return vehicleRepository.findByOwner(owner);
     }
 
     public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {

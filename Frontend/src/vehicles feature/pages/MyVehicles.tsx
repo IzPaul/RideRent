@@ -8,7 +8,11 @@ export default function MyVehicles(){
     useEffect(() => {
         const fetchVehicles = async () => {
             try {
-                const response = await api.get("/api/vehicles/my-vehicles"); // Adjust endpoint if needed
+                const storedEmail = localStorage.getItem("email");
+                const response = await api.get(
+                    `/api/vehicles/my-vehicles?email=${storedEmail}`
+                );
+
                 setVehicles(response.data);
             } catch (err) {
                 console.error("Failed to fetch vehicles", err);

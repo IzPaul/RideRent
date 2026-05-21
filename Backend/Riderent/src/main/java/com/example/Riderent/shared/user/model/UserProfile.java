@@ -61,4 +61,8 @@ public class UserProfile {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<Vehicle> getVehicles() {return vehicles;}
+
+    public void setVehicles(List<Vehicle> vehicles) {this.vehicles = vehicles;}
 }
