@@ -21,9 +21,12 @@ public class Vehicle {
 
     private String type;
 
+    private String description;
+
     private Double dailyRate;
 
     private Double rating;
+
 
 
 
@@ -32,8 +35,9 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(String model, String type, Double dailyRate, Address address) {
+    public Vehicle(String model,String description, String type, Double dailyRate, Address address) {
         this.model = model;
+        this.description = description;
         this.type = type;
         this.dailyRate = dailyRate;
         this.rating = 0.0;
@@ -47,6 +51,9 @@ public class Vehicle {
 
     public String getModel() { return model; }
     public void setModel(String model) { this.model = model; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String model) { this.description = description; }
 
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }

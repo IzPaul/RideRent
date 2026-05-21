@@ -22,27 +22,19 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleRequest request) {
-        System.out.println("=== CREATE VEHICLE CALLED ===");
-        System.out.println("Owner Email: " + request.getOwnerEmail());
-        System.out.println("Model: " + request.getModel());
-        System.out.println("Address: " + request.getAddress());
-
         UserProfile owner = userService.findByEmail(request.getOwnerEmail())
                 .orElseThrow(() -> new RuntimeException("Owner not found: " + request.getOwnerEmail()));
 
         Vehicle vehicle = new Vehicle();
         vehicle.setModel(request.getModel());
+        vehicle.setDescription(request.getDescription());
         vehicle.setType(request.getType());
         vehicle.setDailyRate(request.getDailyRate());
         vehicle.setOwner(owner);
         vehicle.setAddress(request.getAddress());
         vehicle.setRating(0.0);
-        System.out.println("Daily Rate: " + request.getDailyRate());
 
         Vehicle saved = vehicleService.saveVehicle(vehicle);
-        System.out.println("SUCCESS - Vehicle ID: " + saved.getId() + ", Owner ID: " +
-                (saved.getOwner() != null ? saved.getOwner().getId() : "NULL"));
-
         return ResponseEntity.ok(saved);
     }
 

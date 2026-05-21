@@ -99,6 +99,7 @@ export default function MyVehicles(){
                                      </div>
                                      <div className="vehicle-rating">
                                          {"★".repeat(Math.floor(vehicle.rating || 0))}
+                                         {"☆".repeat(5 - Math.floor(vehicle.rating))}
                                      </div>
                                  </div>
                             ))

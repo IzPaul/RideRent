@@ -3,6 +3,7 @@ package com.example.Riderent.features.vehicles;
 public class VehicleRequest {
 
     private String model;
+    private String description;
     private String type;
     private Double dailyRate;
     private String ownerEmail;
@@ -16,6 +17,14 @@ public class VehicleRequest {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getType() {

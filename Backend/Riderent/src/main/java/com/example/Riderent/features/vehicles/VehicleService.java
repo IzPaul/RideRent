@@ -35,6 +35,7 @@ public class VehicleService {
         return vehicleRepository.findById(id)
                 .map(vehicle -> {
                     vehicle.setModel(updatedVehicle.getModel());
+                    vehicle.setDescription(updatedVehicle.getDescription());
                     vehicle.setType(updatedVehicle.getType());
                     vehicle.setDailyRate(updatedVehicle.getDailyRate());
                     vehicle.setRating(updatedVehicle.getRating());

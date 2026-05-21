@@ -9,6 +9,7 @@ interface AddVehicleModalProps {
 export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
     const [form, setForm] = useState({
         model: "",
+        description: "",
         type: "",
         dailyRate: "",
         region: "",
@@ -60,8 +61,8 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
             if (response.status === 200 || response.status === 201) {
                 setSuccess("Vehicle added successfully!");
                 setTimeout(() => {
-                    //toggleModal();
-                    //window.location.reload(); // Refresh the list
+                    toggleModal();
+                    window.location.reload();
                 }, 1500);
             }
         } catch (err: any) {
@@ -114,6 +115,15 @@ export default function AddVehicleModal({ toggleModal }: AddVehicleModalProps) {
                     <input type="text" name="region" placeholder="Region" value={form.region} onChange={handleChange} required />
                     <input type="text" name="province" placeholder="Province" value={form.province} onChange={handleChange} required />
                     <input type="text" name="city" placeholder="City" value={form.city} onChange={handleChange} required />
+
+                    <input
+                        type="text"
+                        name="description"
+                        placeholder="Description"
+                        value={form.description}
+                        onChange={handleChange}
+                        required
+                    />
 
                     <div className="modal-buttons">
                         <button type="button" className="cancel-btn" onClick={toggleModal} disabled={loading}>
