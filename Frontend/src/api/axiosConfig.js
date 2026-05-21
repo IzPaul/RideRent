@@ -1,7 +1,7 @@
 import axios from "axios";
 
-//const baseURL = process.env.REACT_APP_API_URL ;
-const baseURL = "http://localhost:8080";
+const baseURL = process.env.REACT_APP_API_URL; //para deployment
+//const baseURL = "http://localhost:8080"; //para during development
 
 const api = axios.create({
   baseURL: baseURL,
