@@ -76,7 +76,7 @@ export default function MyVehicleDetails() {
     if (!vehicle) return (
         <>
             <Navbar />
-            <div className="mvd-loading"><p>Vehicle not found.</p><button onClick={() => navigate(-1)}>Go Back</button></div>
+            <div className="mvd-loading"><p>Vehicle not found.</p><button className="mv-loading-button" onClick={() => navigate(-1)}>Go Back</button></div>
         </>
     );
 

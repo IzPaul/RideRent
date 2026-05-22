@@ -67,7 +67,7 @@ export default function VehicleDetails() {
                 <Navbar />
                 <div className="mvd-loading">
                     <p>Vehicle not found.</p>
-                    <button onClick={() => navigate(-1)}>Go Back</button>
+                    <button className="mv-loading-button" onClick={() => navigate(-1)}>Go Back</button>
                 </div>
             </>
         );

@@ -65,8 +65,7 @@
 }
 
 .logout-btn:hover {
-  background: #111827;
-  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 .dropdown {

@@ -1,0 +1,16 @@
+.mv-loading-button{
+    margin-top: 8px;
+    padding: 10px 22px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mv-loading-button:hover{
+    background: var(--accent-dark);
+    cursor: pointer;
+}
