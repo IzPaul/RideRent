@@ -5,6 +5,7 @@ import com.example.Riderent.features.bookings.BookingRepository;
 import com.example.Riderent.features.vehicles.Vehicle;
 import com.example.Riderent.features.vehicles.VehicleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ReviewService {
         this.vehicleRepository = vehicleRepository;
     }
 
+    @Transactional
     public ReviewResponse createReview(ReviewRequest request, String bookerEmail) {
         Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -44,11 +46,16 @@ public class ReviewService {
         if (request.getRating() < 1 || request.getRating() > 5) {
             throw new RuntimeException("Rating must be between 1 and 5");
         }
+        Vehicle vehicle = booking.getVehicle();
+        if (vehicle == null) {
+            throw new RuntimeException("Vehicle associated with booking not found");
+        }
 
         Review review = new Review();
         review.setBooking(booking);
         review.setBookerName(booking.getBooker().getFullName());
         review.setRating(request.getRating());
+        String comment = request.getComment();
         review.setComment(request.getComment() != null ? request.getComment().trim() : "");
         review.setCreatedAt(LocalDateTime.now());
 
@@ -59,6 +66,7 @@ public class ReviewService {
         return toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
     public List<ReviewResponse> getReviewsForVehicle(Long vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
