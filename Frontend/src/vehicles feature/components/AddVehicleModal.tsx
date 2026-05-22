@@ -168,7 +168,7 @@ export default function AddVehicleModal({
                             )}
                             <input type="file" accept="image/*" onChange={handleImageChange} className="image-input" />
                         </div>
-                        <small>Max 5MB. Recommended: 1200x800px</small>
+                        <small>Max 1MB.</small>
                     </div>
 
                     <input
