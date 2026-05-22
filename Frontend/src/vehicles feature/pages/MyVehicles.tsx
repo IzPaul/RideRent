@@ -14,6 +14,7 @@ export default function MyVehicles() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [filters, setFilters] = useState({
+        model: '',
         type: '',
         region: '',
         province: '',
@@ -57,6 +58,12 @@ export default function MyVehicles() {
     useEffect(() => {
         let result = [...vehicles];
 
+        if (filters.model) {
+            const modelSearch = filters.model.toLowerCase().trim();
+            result = result.filter(v => v.model?.toLowerCase().includes(modelSearch));
+        }
+
+
         if (filters.type) {
             result = result.filter(v => v.type === filters.type);
         }
@@ -91,6 +98,15 @@ export default function MyVehicles() {
                         <span className="vl-filter-icon">⚙</span>
                         <h3>Filters</h3>
                         <button className="vl-reset" onClick={resetFilters}>Reset</button>
+                    </div>
+
+                    <div className="vl-filter-group">
+                        <label>Model</label>
+                        <input
+                            placeholder="Toyota Camry..."
+                            value={filters.model}
+                            onChange={e => setFilters(p => ({ ...p, model: e.target.value }))}
+                        />
                     </div>
 
                     <div className="vl-filter-group">

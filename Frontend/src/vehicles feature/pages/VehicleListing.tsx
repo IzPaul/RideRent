@@ -9,7 +9,7 @@ export default function VehicleListing() {
     const [vehicles, setVehicles] = useState<any[]>([]);
     const [filtered, setFiltered] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filters, setFilters] = useState({ type: '', region: '', province: '', city: '' });
+    const [filters, setFilters] = useState({model: '', type: '', region: '', province: '', city: '' });
     const navigate = useNavigate();
 
     const { getRegions, getProvincesByRegion } = usePhilippineGeography();
@@ -42,6 +42,11 @@ export default function VehicleListing() {
     useEffect(() => {
         let result = [...vehicles];
 
+        if (filters.model) {
+            const modelSearch = filters.model.toLowerCase().trim();
+            result = result.filter(v => v.model?.toLowerCase().includes(modelSearch));
+        }
+
         if (filters.type) {
             result = result.filter(v => v.type === filters.type);
         }
@@ -61,7 +66,7 @@ export default function VehicleListing() {
         setFiltered(result);
     }, [filters, vehicles]);
 
-    const resetFilters = () => setFilters({ type: '', region: '', province: '', city: '' });
+    const resetFilters = () => setFilters({model: '', type: '', region: '', province: '', city: '' });
 
     const renderStars = (rating: number) => {
         const full = Math.floor(rating || 0);
@@ -79,7 +84,15 @@ export default function VehicleListing() {
                         <button className="vl-reset" onClick={resetFilters}>Reset</button>
                     </div>
 
-                    {/* Dynamic Vehicle Type */}
+                    <div className="vl-filter-group">
+                        <label>Model</label>
+                        <input
+                            placeholder="Toyota Camry..."
+                            value={filters.model}
+                            onChange={e => setFilters(p => ({ ...p, model: e.target.value }))}
+                        />
+                    </div>
+
                     <div className="vl-filter-group">
                         <label>Vehicle Type</label>
                         <select
@@ -93,7 +106,6 @@ export default function VehicleListing() {
                         </select>
                     </div>
 
-                    {/* Region Dropdown */}
                     <div className="vl-filter-group">
                         <label>Region</label>
                         <select
@@ -107,7 +119,6 @@ export default function VehicleListing() {
                         </select>
                     </div>
 
-                    {/* Province Dropdown (Cascading) */}
                     <div className="vl-filter-group">
                         <label>Province</label>
                         <select
@@ -122,7 +133,6 @@ export default function VehicleListing() {
                         </select>
                     </div>
 
-                    {/* City Text Field */}
                     <div className="vl-filter-group">
                         <label>City</label>
                         <input
