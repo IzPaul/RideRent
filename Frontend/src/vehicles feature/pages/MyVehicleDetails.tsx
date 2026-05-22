@@ -190,11 +190,7 @@ export default function MyVehicleDetails() {
                         <div className="mvd-table-wrap">
                             <table className="mvd-table">
                                 <thead>
-                                    <tr
-                                        key={b.id}
-                                        className="mvd-table-row"
-                                        onClick={() => setSelectedBooking(b)}
-                                    >
+                                    <tr>
                                         <th>#</th>
                                         <th>Renter</th>
                                         <th>Start Date</th>
@@ -211,7 +207,7 @@ export default function MyVehicleDetails() {
                                         const d = days(b.startDate, b.endDate);
                                         const canAct = b.status === 'PENDING' || b.status === 'CONFIRMED';
                                         return (
-                                            <tr key={b.id} className="mvd-table-row">
+                                            <tr key={b.id} className="mvd-table-row" onClick={() => setSelectedBooking(b)}>
                                                 <td className="mvd-td-id">{b.id}</td>
                                                 <td>
                                                     <div className="mvd-renter">
