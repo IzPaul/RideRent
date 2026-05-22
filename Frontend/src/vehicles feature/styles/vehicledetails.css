@@ -135,6 +135,11 @@
     font-weight: 700;
     color: var(--ink);
 }
+.mvd-stat-val.rate{
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+}
 .mvd-stat-lbl {
     font-size: 11px;
     text-transform: uppercase;

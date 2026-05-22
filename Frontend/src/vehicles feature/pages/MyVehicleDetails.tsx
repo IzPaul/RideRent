@@ -106,7 +106,7 @@ export default function MyVehicleDetails() {
                         </button>
                         <div className="mvd-sidebar-stats">
                             <div className="mvd-stat">
-                                <span className="mvd-stat-val">₱{vehicle.dailyRate}</span>
+                                <span className="mvd-stat-val rate">₱{vehicle.dailyRate}</span>
                                 <span className="mvd-stat-lbl">per day</span>
                             </div>
                             <div className="mvd-stat-divider" />
@@ -143,8 +143,12 @@ export default function MyVehicleDetails() {
                                 </span>
                             </div>
                             <div className="mvd-info-item">
-                                <span className="mvd-info-lbl">Daily Rate</span>
-                                <span className="mvd-info-val mvd-price">₱{vehicle.dailyRate?.toLocaleString()}</span>
+                                <span className="mvd-info-lbl">Owner</span>
+                                <span className="mvd-info-val">{vehicle.ownerName}</span>
+                            </div>
+                            <div className="mvd-info-item">
+                                <span className="mvd-info-lbl">Owner Contact #</span>
+                                <span className="mvd-info-val">{vehicle.ownerPhone}</span>
                             </div>
                             <div className="mvd-info-item mvd-info-full">
                                 <span className="mvd-info-lbl">Description</span>
