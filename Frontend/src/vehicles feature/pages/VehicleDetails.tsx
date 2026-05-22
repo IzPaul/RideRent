@@ -80,13 +80,11 @@ export default function VehicleDetails() {
         <>
             <Navbar />
             <div className="mvd-page">
-                {/* Back Button */}
                 <button className="mvd-back" onClick={() => navigate(-1)}>
                     ← Back to Listings
                 </button>
 
                 <div className="mvd-top">
-                    {/* Sidebar */}
                     <aside className="mvd-sidebar">
                         <div className="mvd-image-box">
                             <div className="card-img">
@@ -128,7 +126,6 @@ export default function VehicleDetails() {
                         </div>
                     </aside>
 
-                    {/* Main Info */}
                     <div className="mvd-info">
                         <div className="mvd-info-header">
                             <div>
@@ -161,7 +158,6 @@ export default function VehicleDetails() {
                     </div>
                 </div>
 
-                {/* Reviews Section */}
                 <div className="mvd-bookings-section">
                     <div className="mvd-section-header">
                         <h2 className="mvd-section-title">Reviews</h2>
@@ -208,7 +204,6 @@ export default function VehicleDetails() {
                 </div>
             </div>
 
-            {/* Booking Modal */}
             {showBookingModal && (
                 <BookingModal
                     vehicle={vehicle}

@@ -487,3 +487,69 @@
     opacity: 0.88;
     transform: translateY(-1px);
 }
+.mvd-table-row {
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.mvd-table-row:hover {
+    background: #f5f7fb;
+}
+
+.mvd-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.mvd-modal {
+    width: 90%;
+    max-width: 500px;
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: mvdFadeIn 0.2s ease;
+}
+
+.mvd-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mvd-modal-close {
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.mvd-modal-content p {
+    margin-bottom: 0.8rem;
+}
+
+.mvd-extra-info-box {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #f6f8fc;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+@keyframes mvdFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

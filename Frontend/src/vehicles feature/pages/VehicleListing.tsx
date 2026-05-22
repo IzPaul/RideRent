@@ -14,13 +14,11 @@ export default function VehicleListing() {
 
     const { getRegions, getProvincesByRegion } = usePhilippineGeography();
 
-    // Dynamic Vehicle Types
     const vehicleTypes = useMemo(() => {
         const types = [...new Set(vehicles.map(v => v.type).filter(Boolean))];
         return types.sort();
     }, [vehicles]);
 
-    // Provinces based on selected region
     const availableProvinces = useMemo(() => {
         return getProvincesByRegion(filters.region);
     }, [filters.region, getProvincesByRegion]);
@@ -35,14 +33,12 @@ export default function VehicleListing() {
             .finally(() => setLoading(false));
     }, []);
 
-    // Reset province when region changes
     useEffect(() => {
         if (filters.region === '') {
             setFilters(prev => ({ ...prev, province: '' }));
         }
     }, [filters.region]);
 
-    // Apply Filters
     useEffect(() => {
         let result = [...vehicles];
 

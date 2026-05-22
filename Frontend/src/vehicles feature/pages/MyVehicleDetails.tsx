@@ -32,6 +32,7 @@ export default function MyVehicleDetails() {
     const [loading, setLoading] = useState(true);
     const [bookingsLoading, setBookingsLoading] = useState(true);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -98,14 +99,11 @@ export default function MyVehicleDetails() {
         <>
             <Navbar />
             <div className="mvd-page">
-                {/* Back */}
                 <button className="mvd-back" onClick={() => navigate(-1)}>
                     ← My Listings
                 </button>
 
-                {/* Top section: sidebar + info */}
                 <div className="mvd-top">
-                    {/* Sidebar */}
                     <aside className="mvd-sidebar">
                         <div className="mvd-image-box">
                             <div className="card-img">
@@ -142,7 +140,6 @@ export default function MyVehicleDetails() {
                         </div>
                     </aside>
 
-                    {/* Vehicle info */}
                     <div className="mvd-info">
                         <div className="mvd-info-header">
                             <div>
@@ -175,7 +172,6 @@ export default function MyVehicleDetails() {
                     </div>
                 </div>
 
-                {/* Bookings table */}
                 <div className="mvd-bookings-section">
                     <h2 className="mvd-section-title">
                         Bookings
@@ -194,7 +190,11 @@ export default function MyVehicleDetails() {
                         <div className="mvd-table-wrap">
                             <table className="mvd-table">
                                 <thead>
-                                    <tr>
+                                    <tr
+                                        key={b.id}
+                                        className="mvd-table-row"
+                                        onClick={() => setSelectedBooking(b)}
+                                    >
                                         <th>#</th>
                                         <th>Renter</th>
                                         <th>Start Date</th>
@@ -256,6 +256,47 @@ export default function MyVehicleDetails() {
                     )}
                 </div>
             </div>
+            {selectedBooking && (
+                <div
+                    className="mvd-modal-overlay"
+                    onClick={() => setSelectedBooking(null)}
+                >
+                    <div
+                        className="mvd-modal"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="mvd-modal-header">
+                            <h3>Booking #{selectedBooking.id}</h3>
+                            <button
+                                className="mvd-modal-close"
+                                onClick={() => setSelectedBooking(null)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="mvd-modal-content">
+                            <p>
+                                <strong>Renter:</strong>{" "}
+                                {selectedBooking.bookerName}
+                            </p>
+
+                            <p>
+                                <strong>Email:</strong>{" "}
+                                {selectedBooking.bookerEmail}
+                            </p>
+
+                            <p>
+                                <strong>Extra Info:</strong>
+                            </p>
+
+                            <div className="mvd-extra-info-box">
+                                {selectedBooking.extraInfo || "No extra information provided."}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {isEditModalOpen && (
                 <AddVehicleModal

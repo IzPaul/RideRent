@@ -22,18 +22,15 @@ export default function MyVehicles() {
 
     const { getRegions, getProvincesByRegion } = usePhilippineGeography();
 
-    // Dynamic Vehicle Types
     const vehicleTypes = useMemo(() => {
         const types = [...new Set(vehicles.map(v => v.type).filter(Boolean))];
         return types.sort();
     }, [vehicles]);
 
-    // Provinces based on selected region
     const availableProvinces = useMemo(() => {
         return getProvincesByRegion(filters.region);
     }, [filters.region, getProvincesByRegion]);
 
-    // Reset dependent filters when region changes
     useEffect(() => {
         if (filters.region === '') {
             setFilters(prev => ({ ...prev, province: '' }));
@@ -57,7 +54,6 @@ export default function MyVehicles() {
         fetchVehicles();
     }, []);
 
-    // Apply Filters
     useEffect(() => {
         let result = [...vehicles];
 
@@ -97,7 +93,6 @@ export default function MyVehicles() {
                         <button className="vl-reset" onClick={resetFilters}>Reset</button>
                     </div>
 
-                    {/* Vehicle Type - Dynamic */}
                     <div className="vl-filter-group">
                         <label>Vehicle Type</label>
                         <select
@@ -111,7 +106,6 @@ export default function MyVehicles() {
                         </select>
                     </div>
 
-                    {/* Region - Dropdown */}
                     <div className="vl-filter-group">
                         <label>Region</label>
                         <select
@@ -125,7 +119,6 @@ export default function MyVehicles() {
                         </select>
                     </div>
 
-                    {/* Province - Cascading Dropdown */}
                     <div className="vl-filter-group">
                         <label>Province</label>
                         <select
@@ -140,7 +133,6 @@ export default function MyVehicles() {
                         </select>
                     </div>
 
-                    {/* City - Text Input (case insensitive) */}
                     <div className="vl-filter-group">
                         <label>City</label>
                         <input
