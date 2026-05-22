@@ -289,7 +289,17 @@
      border-radius: 10px;
      border: none;
  }
- .add-btn:hover{
+ .add-btn:hover {
     background: var(--accent-dark);
+    cursor: pointer;
+  }
+
+  .load-more-btn {
+    padding: 12px 32px;
+    fontSize: 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    borderRadius: 8px;
     cursor: pointer;
   }

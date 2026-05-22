@@ -21,6 +21,8 @@
     background: var(--surface);
     padding: 40px 56px;
     font-family: 'DM Sans', sans-serif;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .mvd-loading {

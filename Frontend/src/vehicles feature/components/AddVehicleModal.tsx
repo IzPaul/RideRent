@@ -148,9 +148,8 @@ export default function AddVehicleModal({
                 {success && <div className="success-alert">{success}</div>}
 
                 <form onSubmit={handleSubmit} className="add-vehicle-form">
-                    {/* Image Upload - unchanged */}
                     <div className="image-upload-section">
-                        <label className="image-label">Vehicle Image <span className="required">*</span></label>
+                        <label className="image-label">Vehicle Image</label>
                         <div className="image-preview-container">
                             {imagePreview ? (
                                 <img src={imagePreview} alt="Preview" className="image-preview"
@@ -180,7 +179,6 @@ export default function AddVehicleModal({
                         required
                     />
 
-                    {/* Vehicle Type as Text Field */}
                     <input
                         type="text"
                         name="type"
@@ -238,7 +236,6 @@ export default function AddVehicleModal({
                         value={form.description}
                         onChange={handleChange}
                         rows={4}
-                        required
                     />
 
                     <div className="modal-buttons">

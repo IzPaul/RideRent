@@ -1,5 +1,6 @@
 package com.example.Riderent.features.vehicles;
 
+import com.example.Riderent.features.bookings.Booking;
 import com.example.Riderent.features.bookings.BookingRepository;
 import com.example.Riderent.shared.user.model.UserProfile;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,12 @@ public class VehicleService {
     }
 
     public void deleteVehicle(Long id) {
+        List<Booking> bookings = bookingRepository.findByVehicleId(id);
+        for (Booking booking : bookings) {
+            booking.setStatus("CANCELLED");
+            bookingRepository.save(booking);
+        }
+
         vehicleRepository.deleteById(id);
     }
 

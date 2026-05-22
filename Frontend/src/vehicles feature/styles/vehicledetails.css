@@ -21,6 +21,8 @@
     background: var(--surface);
     padding: 40px 56px;
     font-family: 'DM Sans', sans-serif;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .mvd-loading {
@@ -454,4 +456,34 @@
 .review-count {
     color: #64748b;
     font-size: 14px;
+}
+
+.mvd-delete-btn {
+    background-color: #dc3545;
+    color: white;
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.mvd-edit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.mvd-delete-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
 }

@@ -51,6 +51,20 @@ export default function MyVehicleDetails() {
         setIsEditModalOpen(false);
     };
 
+    const handleDeleteVehicle = async () => {
+        if (!window.confirm('Are you sure you want to delete this vehicle?\n\nThis action cannot be undone.\nAll associated bookings will be automatically cancelled.')) {
+            return;
+        }
+
+        try {
+            await api.delete(`/api/vehicles/${id}`);
+            alert('Vehicle deleted successfully. All bookings have been cancelled.');
+            navigate('/my-vehicles');
+        } catch (err: any) {
+            alert(err.response?.data?.message || 'Failed to delete vehicle.');
+        }
+    };
+
     const handleStatusUpdate = async (bookingId: number, action: 'confirm' | 'cancel') => {
         const ownerEmail = localStorage.getItem('email') || '';
         const confirmMsg = action === 'cancel' ? 'Cancel this booking?' : 'Confirm this booking?';
@@ -103,6 +117,9 @@ export default function MyVehicleDetails() {
                         </div>
                         <button className="mvd-edit-btn" onClick={() => setIsEditModalOpen(true)}>
                             Edit Details
+                        </button>
+                        <button className="mvd-delete-btn" onClick={handleDeleteVehicle}>
+                            Delete Vehicle
                         </button>
                         <div className="mvd-sidebar-stats">
                             <div className="mvd-stat">
